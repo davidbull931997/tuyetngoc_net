@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!--<title><%= title %></title>-->
+    <% include ./includes/head %>
+</head>
+
+<body>
+    <div id="login-page" class="container">
+        <div class="col-xs-12">
+            <form class="form-signin">
+                <h3 class="form-signin-heading text-center">Please input account to go to manage page: </h3>
+                <label for="username" class="sr-only">Username</label>
+                <input id="username" type="text" class="form-control" placeholder="Username">
+                <input id="password" type="password" class="form-control" placeholder="Password" style="margin-top:10px;">
+                <button id="login-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;">Login</button>
+            </form>
+            <p class="text-center"><em>Developed by <a style="text-decoration:none;" href="https://www.facebook.com/davidbull931997" target="_blank"><mark style="background-color:#fcf8e3;color: #00B7FF;">Phan Ngoc Lam</mark></a></em></p>
+            <p class="text-center" id="copy-right">&copy; </p>
+            <!--<i class="material-icons">done</i>-->
+        </div>
+    </div>
+    <div class="container" id="manage-page" style="display:none;">
+        <div class="table-responsive" style="background-color:#FCFFD6;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <!--<th style="border-bottom:0;">&nbsp;</th>
+                        <th style="border-bottom:0;">&nbsp;</th>-->
+                        <th style="border-bottom:0;" colspan="6"><button id="add-new-btn" class="pull-right btn btn-success" type="button">Add new</button></th>
+                    </tr>
+                    <tr>
+                        <th style="border-top:0;">User</th>
+                        <th style="border-top:0;">Points</th>
+                        <th style="border-top:0;">Release Day</th>
+                        <th style="border-top:0;">Expire Day</th>
+                        <th style="border-top:0;">Card Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="vue">
+                    <tr v-for="customer in customerList">
+                        <td>{{ customer.username }}</td>
+                        <td>{{ customer.playtime }}</td>
+                        <td>{{ customer.release_card_day }}</td>
+                        <td>{{ customer.expire_card_day }}</td>
+                        <td>{{ customer.card_quantity }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/javascripts/admin.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#vue',
+            data: {
+                customerList: <%- JSON.stringify(customerList) %>
+            }
+        });
+    </script>
+</body>
+
+</html>

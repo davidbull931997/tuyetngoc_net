@@ -38,7 +38,7 @@ router.post('/admin/adminLogin', function (req, res, next) {
 });
 
 router.post('/admin/adminUnLoad', function (req, res, next) {
-  userLoginStat = false;
+  adminLoginStatus = false;
   res.end();
 });
 

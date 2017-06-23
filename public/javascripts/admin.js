@@ -131,9 +131,12 @@ function checkInput() {
         }, (result) => {
             //swal.hideLoading();
             if (result.status) {
-                $('div#login-page').fadeOut(400, () => {
-                    $('div#manage-page').fadeIn();
-                });
+                $('div#login-page').fadeOut(400, () =>
+                    $('div#manage-page').fadeIn(400, () => {
+                        $('input#username').val('');
+                        $('input#password').val('');
+                    })
+                );
             }
             else {
                 if (result.code == 2)

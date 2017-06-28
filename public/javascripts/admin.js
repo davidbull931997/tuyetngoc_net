@@ -13,10 +13,13 @@ $(window).resize(() => {
     $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
 });
 
-$(window).on('beforeunload', () => $.post('/admin/adminUnLoad'));
+$(window).on('beforeunload', () => {
+    if ($('div#manage-page').css('display') == 'block')
+        $.post('/admin/adminUnLoad');
+    return null;
+});
 
 $('button#login-btn').click((e) => {
-    // e.preventDefault();
     checkInput();
 });
 
@@ -30,44 +33,58 @@ $('input#password').keypress((e) => {
 
 $('#add-new-btn').click(() => {
     if ($('#temp-user').length) return;
-    $('#manage-page > div > table > thead > tr:nth-child(2)').append('<th style="border-top:0;">Action</th>');
     $('#manage-page > div > table > tbody').append(`
-    <tr id='temp-user'>
+    <tr id='temp-user' style='display:none;'>
         <td>
             <input type='text' id='temp-username' placeholder='New username' data-toggle="tooltip" data-placement="top" title="Please input username" style='width:100%'>
         </td>
         <td>
-            <input onchange='checkPlayTime();' oninput='checkPlayTime();' type='number' step=1 id='temp-play-time' placeholder='Play time' data-toggle="tooltip1" data-placement="top" title="Please input play time" style='width:100%'>
+            <input oninput='checkPlayTime();' type='number' step=1 min=1 id='temp-play-time' placeholder='Point' data-toggle="tooltip1" data-placement="top" title="Please input play time" style='width:100%'>
         </td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>
-            <a id='temp-btn-add' href='javascript:void(0);' onclick='addTemp();' class='material-icons' style='text-decoration:none;color:lightgreen;'>check_circle</a>
+            <input type="checkbox" id="temp-reward30">
+            <label for="temp-reward30">30</label>
+            <input type="checkbox" id="temp-reward50">
+            <label for="temp-reward50">50</label>
+            <input type="checkbox" id="temp-reward70">
+            <label for="temp-reward70">70</label>
+            <br>
+            <input type="checkbox" id="temp-reward80">
+            <label for="temp-reward80">80</label>
+            <input type="checkbox" id="temp-reward100">
+            <label for="temp-reward100">100</label>
+            <input type="checkbox" id="temp-reward111">
+            <label for="temp-reward111">111</label></td>
+        <td>
+            <a id='temp-btn-add' href='javascript:void(0);' onclick='addCustomer();' class='material-icons' style='text-decoration:none;color:lightgreen;'>check_circle</a>
             <a id='temp-btn-cancel' href='javascript:void(0);' onclick='removeTemp();' class='material-icons' style='text-decoration:none;color:red'>close</a>
         </td>
     </tr>
     `);
+    $('tr#temp-user').fadeIn();
 });
 
 function checkPlayTime() {
-    if (parseInt($('input#temp-play-time').val()) <= 0)
-        $('input#temp-play-time').val(0);
+    if (parseInt($('input#temp-play-time').val()) <= 0) {
+        $('input#temp-play-time').val(1);
+        $('input#temp-play-time').select();
+    }
 }
 
 function removeTemp() {
     $('#temp-user').fadeOut(400, () => {
         $('#temp-user').remove();
-        $('#manage-page > div > table > thead > tr:nth-child(2) > th:last-child').remove();
     });
 }
 
-function addTemp() {
+function addCustomer() {
     var exist = false;
     for (i = 0; i < vue.$data.customerList.length; i++) {
         if ($('input#temp-username').val() == vue.$data.customerList[i].username) {
             exist = true;
-            console.log('existed');
             break;
         }
     }
@@ -87,32 +104,106 @@ function addTemp() {
             $('[data-toggle="tooltip1"]').tooltip('hide');
         }, 2000);
     }
-    else if (exist == true) {
+    else if (exist == true)
         swal('Oops...!', 'The username availabled!', 'warning');
-    }
     else {
         $('#temp-user').fadeOut(400, () => {
-            var unixNow = Date.now(),
-                expire = new Date(unixNow + 5184000000).toLocaleDateString(),
-                now = new Date(unixNow).toLocaleDateString();
             newUser = {
                 username: $('input#temp-username').val(),
                 playtime: parseInt($('input#temp-play-time').val()),
-                release_card_day: now,
-                expire_card_day: expire,
-                card_quantity: 1
-            }
+                release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
+                expire_card_day: moment().add(60, 'days').calendar(),
+                card_quantity: 1,
+                reward: []
+            };
+            $('#temp-user > td:nth-child(6) > input').each((index, element) => {
+                newUser.reward[index] = $(element).is(':checked').toString();
+            });
+            swal({ padding: 30 });
             swal.showLoading();
-            $.post('/admin/newUser', newUser, () => {
+            $.post('/admin/newUser', newUser, (_id) => {
                 swal.hideLoading();
                 swal('Sucess', 'The user has been added!', 'success');
+                newUser._id=_id;
                 vue.$data.customerList.push(newUser);
             });
             $('#temp-user').remove();
-            $('#manage-page > div > table > thead > tr:nth-child(2) > th:last-child').remove();
             $('#manage-page > div > table > tbody > tr:last-child').fadeIn();
-
         });
+    }
+}
+
+function removeCustomer(_id) {
+    swal({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then(function () {
+        swal({ padding: 30 });
+        swal.showLoading();
+        $.post('/admin/removeUser', { _id: _id }).done(() => {
+            swal.hideLoading();
+            swal('Deleted', 'The customer has been deleted!', 'success');
+            for (i = 0; i < vue.$data.customerList.length; i++) {
+                if (vue.$data.customerList[i]._id == _id) {
+                    vue.$data.customerList.splice(i, 1);
+                    break;
+                }
+            }
+        });
+    }).catch(swal.noop);
+}
+
+function updateCustomer(_id) {
+    var exist = false;
+    for (i = 1; i <= $('tbody#vue > tr').length; i++) {
+        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(7) > a:first-child').css('display') == 'inline-block') {
+            exist = true;
+            break;
+        }
+    }
+    if (!exist) {
+        var value = {
+            point: parseInt($('tr#' + _id + ' > td:nth-child(2)').text()),
+            card_quantity: parseInt($('tr#' + _id + ' > td:nth-child(5)').text()),
+        }
+        $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(2)').append('<input type="number" step="1" value=' + value.point + ' min="1">');
+        $('tr#' + _id + ' > td:nth-child(5)').append('<input type="number" step="1" value=' + value.card_quantity + ' min="1">');
+        $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', '').removeAttr('disabled');
+        $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'inline-block');
+    }
+}
+
+function saveUpdateCustomer(_id) {
+    for (i = 0; i < vue.$data.customerList.length; i++) {
+        if (_id == vue.$data.customerList[i]._id) {
+            vue.$data.customerList[i].playtime = $('tr#' + _id + ' > td:nth-child(2) > input').val();
+            vue.$data.customerList[i].card_quantity = $('tr#' + _id + ' > td:nth-child(5) > input').val();
+            $('#' + _id + ' > td:nth-child(6) > input').each((index, element) => {
+                vue.$data.customerList[i].reward[index] = $(element).is(':checked').toString();
+            });
+            swal({ padding: 30 });
+            swal.showLoading();
+            $.post('/admin/updateUser', vue.$data.customerList[i], () => {
+                swal.hideLoading();
+                swal('Updated', 'The customer information has been updated!', 'success');
+                $('tr#' + _id + ' > td:nth-child(2) > input').remove();
+                $('tr#' + _id + ' > td:nth-child(5) > input').remove();
+                $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
+                $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
+                $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
+                $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
+                $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+            });
+            break;
+        }
     }
 }
 

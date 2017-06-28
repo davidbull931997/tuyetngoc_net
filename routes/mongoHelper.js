@@ -48,7 +48,7 @@ MongoDbHelper.removeDocument = function (id, collectionName, callback) {
         if (err) console.log('MONGODB ERROR', err);
         else {
             var collection = db.collection(collectionName);
-            collection.removeOne({_id: ObjectID(id)}, function (err, result) {
+            collection.deleteOne({_id: ObjectID(id)}, function (err, result) {
                 if (err) console.log('MONGODB ERROR', err);
                 else {
                     db.close();

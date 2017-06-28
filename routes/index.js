@@ -5,14 +5,13 @@ var adminLoginStatus = false;
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
-  adminLoginStatus == true;
+  res.render('index', { title: 'TuyetNgoc - Member' });
 });
 
 router.get('/admin', function (req, res, next) {
   mongoHelper.findDocuments({}, 'Customers', (result) => {
     res.render('admin', {
-      title: 'Express',
+      title: 'TuyetNgoc - Admin',
       customerList: result
     });
   });
@@ -29,6 +28,7 @@ router.post('/admin/adminLogin', function (req, res, next) {
       adminLoginStatus = true;
       res.send({ status: true });
     }
+    console.log(adminLoginStatus);
   }
   else//wrong user or password
     res.send({
@@ -39,24 +39,35 @@ router.post('/admin/adminLogin', function (req, res, next) {
 
 router.post('/admin/adminUnLoad', function (req, res, next) {
   adminLoginStatus = false;
+  console.log(adminLoginStatus);
   res.end();
 });
 
 router.post('/admin/newUser', function (req, res, next) {
-  // req.body.id,
-  // req.body.username,
-  // req.body.playtime,
-  // req.body.release_card_day,
-  // req.body.expire_card_day,
-  // req.body.card_quantity
   mongoHelper.insertDocument({
-    id: req.body.id,
     username: req.body.username,
     playtime: req.body.playtime,
     release_card_day: req.body.release_card_day,
     expire_card_day: req.body.expire_card_day,
-    card_quantity: req.body.card_quantity
-  }, 'Customers', () => {
+    card_quantity: req.body.card_quantity,
+    reward: req.body['reward[]']
+  }, 'Customers', (result) => {
+    res.send(result.insertedId);
+  });
+});
+
+router.post('/admin/removeUser', function (req, res, next) {
+  mongoHelper.removeDocument(req.body._id, 'Customers', (result) => {
+    res.end();
+  });
+});
+
+router.post('/admin/updateUser', function (req, res, next) {
+  mongoHelper.updateDocument(req.body._id, {
+    playtime: req.body.playtime,
+    card_quantity: req.body.card_quantity,
+    reward: req.body['reward[]']
+  }, 'Customers', (result) => {
     res.end();
   });
 });

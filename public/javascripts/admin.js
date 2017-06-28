@@ -14,9 +14,10 @@ $(window).resize(() => {
 });
 
 $(window).on('beforeunload', () => {
-    if ($('div#manage-page').css('display') == 'block')
+    if ($('div#manage-page').css('display') == 'block') {
         $.post('/admin/adminUnLoad');
-    return null;
+        return null;
+    }
 });
 
 $('button#login-btn').click((e) => {
@@ -124,7 +125,7 @@ function addCustomer() {
             $.post('/admin/newUser', newUser, (_id) => {
                 swal.hideLoading();
                 swal('Sucess', 'The user has been added!', 'success');
-                newUser._id=_id;
+                newUser._id = _id;
                 vue.$data.customerList.push(newUser);
             });
             $('#temp-user').remove();

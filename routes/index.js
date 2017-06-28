@@ -28,7 +28,6 @@ router.post('/admin/adminLogin', function (req, res, next) {
       adminLoginStatus = true;
       res.send({ status: true });
     }
-    console.log(adminLoginStatus);
   }
   else//wrong user or password
     res.send({
@@ -39,7 +38,6 @@ router.post('/admin/adminLogin', function (req, res, next) {
 
 router.post('/admin/adminUnLoad', function (req, res, next) {
   adminLoginStatus = false;
-  console.log(adminLoginStatus);
   res.end();
 });
 

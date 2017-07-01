@@ -162,7 +162,9 @@ function addNewCustomer() {
             }
         }
     });
-    $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="text"]:nth-child(1)').blur();
+    setTimeout(function () {
+        $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="text"]:nth-child(1)').blur();
+    }, 200);
 }
 
 function removeCustomer(_id) {

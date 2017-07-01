@@ -74,11 +74,11 @@ function addNewCustomer() {
     vex.dialog.open({
         overlayClosesOnClick: false,
         appendLocation: '#manage-page',
-        message: 'Add new customers here:',
+        message: 'Thêm mới khách hàng:',
         input: [
-            `<label for><input name="customerName" type="text" placeholder="Customer name" required />`,
-            `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Point" required />`,
-            `<label class="col-xs-4" style="font-weight:normal;">Reward</label>
+            `<label for><input name="customerName" type="text" placeholder="Tên khách hàng" required />`,
+            `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Điểm" required />`,
+            `<label class="col-xs-4" style="font-weight:normal;">Mốc nhận quà:</label>
 			<div class="col-xs-8">
                 <div class="pull-right">
                     <input type="checkbox" name="customerReward30">
@@ -98,8 +98,8 @@ function addNewCustomer() {
 			</div>`
         ].join(''),
         buttons: [
-            $.extend({}, vex.dialog.buttons.YES, { text: 'Add' }),
-            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Thêm' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Hủy' })
         ],
         callback: function (data) {
             if (data) {
@@ -107,7 +107,7 @@ function addNewCustomer() {
                 for (i = 0; i < vue.$data.customerList.length; i++) {
                     if (data.customerName == vue.$data.customerList[i].username) {
                         vex.dialog.alert({
-                            message: 'The customer name existed!',
+                            message: 'Tên khách hàng đã tồn tại!',
                             overlayClosesOnClick: false,
                             appendLocation: '#manage-page',
                             callback: (value) => {
@@ -144,7 +144,7 @@ function addNewCustomer() {
                     swal.showLoading();
                     $.post('/admin/newUser', newUser, (_id) => {
                         swal.hideLoading();
-                        swal('Sucess', 'The user has been added!', 'success');
+                        swal('Thành công', 'Đã thêm khách hàng!', 'success');
                         newUser._id = _id;
                         vue.$data.customerList.push(newUser);
                         vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
@@ -157,19 +157,19 @@ function addNewCustomer() {
 
 function removeCustomer(_id) {
     swal({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Bạn có chắc chắn?',
+        text: "Bạn không thể hoàn tác khi đã thực hiện xóa !",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Xác nhận'
     }).then(function () {
         swal({ padding: 30 });
         swal.showLoading();
         $.post('/admin/removeUser', { _id: _id }).done(() => {
             swal.hideLoading();
-            swal('Deleted', 'The customer has been deleted!', 'success');
+            swal('Thành công', 'Đã xóa khách hàng!', 'success');
             for (i = 0; i < vue.$data.customerList.length; i++) {
                 if (vue.$data.customerList[i]._id == _id) {
                     vue.$data.customerList.splice(i, 1);
@@ -215,7 +215,7 @@ function saveUpdateCustomer(_id) {
             swal.showLoading();
             $.post('/admin/updateUser', vue.$data.customerList[i], () => {
                 swal.hideLoading();
-                swal('Updated', 'The customer information has been updated!', 'success');
+                swal('Thành công', 'Đã cập nhật thành công thông tin khách hàng!', 'success');
                 $('tr#' + _id + ' > td:nth-child(2) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(5) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
@@ -234,7 +234,7 @@ function checkInput() {
     if ($('input#username').val() == '' || $('input#password').val() == '')
         swal(
             'Oops...',
-            'Please input username and password',
+            'Vui lòng nhập tài khoản và mật khẩu',
             'warning'
         )
     else {
@@ -255,13 +255,13 @@ function checkInput() {
                 if (result.code == 2)
                     swal(
                         'Oops...',
-                        'Something went wrong!',
+                        'Tài khoản hoặc mật khẩu sai!',
                         'error'
                     )
                 else
                     swal(
                         'Oops...',
-                        'Admin account is using (Logged)!',
+                        'Tài khoản đang được sử dụng !',
                         'error'
                     )
             }

@@ -12,13 +12,13 @@
     <div id="login-page" class="container">
         <div class="col-xs-12">
             <form class="form-signin">
-                <h3 class="form-signin-heading text-center">Please input account to go to manage page: </h3>
-                <label for="username" class="sr-only">Username</label>
-                <input id="username" type="text" class="form-control" placeholder="Username">
-                <input id="password" type="password" class="form-control" placeholder="Password" style="margin-top:10px;">
-                <button id="login-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;">Login</button>
+                <h3 class="form-signin-heading text-center">Vui lòng nhập tài khoản: </h3>
+                <label for="username" class="sr-only">Tài khoản</label>
+                <input id="username" type="text" class="form-control" placeholder="Tên tài khoản">
+                <input id="password" type="password" class="form-control" placeholder="Mật khẩu" style="margin-top:10px;">
+                <button id="login-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;">Đăng nhập</button>
             </form>
-            <p class="text-center"><em>Developed by <a style="text-decoration:none;" href="https://www.facebook.com/davidbull931997" target="_blank"><mark style="background-color:#fcf8e3;color: #00B7FF;">Phan Ngoc Lam</mark></a></em></p>
+            <p class="text-center"><em>Phát triển bởi <a style="text-decoration:none;" href="https://www.facebook.com/davidbull931997" target="_blank"><mark style="background-color:#fcf8e3;color: #00B7FF;">Phan Ngoc Lam</mark></a></em></p>
             <p class="text-center" id="copy-right">&copy; </p>
         </div>
     </div>
@@ -30,12 +30,12 @@
                     <thead>
                         <tr>
                             <th style="border-bottom:0;" colspan="7">
-                                <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Add new</button>
+                                <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <!--Search bar-->
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Input customer to search" style="font-weight:normal;"/>
+                                            <input type="text" class="form-control" placeholder="Tìm khách hàng" style="font-weight:normal;"/>
                                             <span class="input-group-btn">
                                                 <button class="btn btn-info" type="button" style="padding-top:2px;margin-top:0;">
                                                     <i class="glyphicon glyphicon-search"></i>
@@ -47,13 +47,13 @@
                             </th>
                         </tr>
                         <tr>
-                            <th style="border-top:0;">User</th>
-                            <th style="border-top:0;">Points</th>
-                            <th style="border-top:0;">Release Day</th>
-                            <th style="border-top:0;">Expire Day</th>
-                            <th style="border-top:0;">Card Quantity</th>
-                            <th style="border-top:0;">Reward</th>
-                            <th style="border-top:0;">Action</th>
+                            <th style="border-top:0;">Tên khách hàng</th>
+                            <th style="border-top:0;">Điểm</th>
+                            <th style="border-top:0;">Ngày cấp thẻ</th>
+                            <th style="border-top:0;">Ngày hết hạn</th>
+                            <th style="border-top:0;">Đã cấp</th>
+                            <th style="border-top:0;">Mốc nhận quà</th>
+                            <th style="border-top:0;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="vue">

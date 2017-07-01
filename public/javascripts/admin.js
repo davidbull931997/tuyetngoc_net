@@ -9,7 +9,17 @@ $(() => {
 });
 
 $(window).resize(() => {
-    $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
+    if ($('#login-page').css('display') == 'block')
+        $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
+    if ($('#manage-page').css('display') == 'block') {
+        $('#search-bar').css({
+            width: ($(window).width() - $('#manage-page > div.container').width()) / 2,
+            top: $('#manage-page > div.container > div > table > thead').height() - $('#search-bar').height()
+        });
+        $('#search-bar').css({
+            left: $(window).width() - $('#search-bar').width()
+        });
+    }
 });
 
 $(window).on('beforeunload', () => {
@@ -24,11 +34,19 @@ $('button#login-btn').click((e) => {
 });
 
 $('input#username').keypress((e) => {
-    if (e.keyCode == 13) checkInput()
+    if (e.keyCode == 13) checkInput();
 });
 
 $('input#password').keypress((e) => {
-    if (e.keyCode == 13) checkInput()
+    if (e.keyCode == 13) checkInput();
+});
+
+$('#custom-search-input > div > span > button').click(() => {
+    searchCustomer();
+});
+
+$('#custom-search-input > div > input').keypress((e) => {
+    if (e.keyCode == 13) searchCustomer();
 });
 
 $('#add-new-btn').click(() => {
@@ -39,6 +57,25 @@ function checkPlayTime1() {
     if (parseInt($('#manage-page > div  > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').val()) <= 0) {
         $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').val(1);
         $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').select();
+    }
+}
+
+function searchCustomer() {
+    for (i = 0; i < vue.$data.customerList.length; i++) {
+        if ($('#custom-search-input > div > input').val().toLowerCase() == vue.$data.customerList[i].username.toLowerCase()) {
+            $('body').animate({ scrollTop: $('#' + vue.$data.customerList[i]._id).offset().top - ($(window).height() / 2) });
+            setTimeout(function (_id) {
+                $('#' + _id).css({
+                    transition: '1s',
+                    'background-color': '#5cd660'
+                });
+                setTimeout(function (_id) {
+                    $('#' + _id).css({
+                        'background-color': ''
+                    });
+                }, 1001, _id);
+            }, 401, vue.$data.customerList[i]._id);
+        }
     }
 }
 
@@ -220,6 +257,13 @@ function checkInput() {
                     $('div#manage-page').fadeIn(400, () => {
                         $('input#username').val('');
                         $('input#password').val('');
+                        $('#search-bar').css({
+                            width: ($(window).width() - $('#manage-page > div.container').width()) / 2,
+                            top: $('#manage-page > div.container > div > table > thead').height() - $('#search-bar').height()
+                        });
+                        $('#search-bar').css({
+                            left: $(window).width() - $('#search-bar').width()
+                        });
                     })
                 );
             }

@@ -223,8 +223,8 @@ function saveUpdateCustomer(_id) {
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
                 $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+                vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
             });
-            vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
             break;
         }
     }

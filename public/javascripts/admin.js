@@ -6,7 +6,6 @@ $(() => {
     $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
     let date = new Date();
     $('p.text-center#copy-right').append(date.getFullYear());
-    //$('#manage-page > div > table > thead > tr:nth-child(2) > th').css('width', '20%');
 });
 
 $(window).resize(() => {
@@ -33,105 +32,100 @@ $('input#password').keypress((e) => {
 });
 
 $('#add-new-btn').click(() => {
-    if ($('#temp-user').length) return;
-    $('#manage-page > div > table > tbody').append(`
-    <tr id='temp-user' style='display:none;'>
-        <td>
-            <input type='text' id='temp-username' placeholder='New username' data-toggle="tooltip" data-placement="top" title="Please input username" style='width:100%'>
-        </td>
-        <td>
-            <input oninput='checkPlayTime();' type='number' step=1 min=1 id='temp-play-time' placeholder='Point' data-toggle="tooltip1" data-placement="top" title="Please input play time" style='width:100%'>
-        </td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>
-            <input type="checkbox" id="temp-reward30">
-            <label for="temp-reward30">30</label>
-            <input type="checkbox" id="temp-reward50">
-            <label for="temp-reward50">50</label>
-            <input type="checkbox" id="temp-reward70">
-            <label for="temp-reward70">70</label>
-            <br>
-            <input type="checkbox" id="temp-reward80">
-            <label for="temp-reward80">80</label>
-            <input type="checkbox" id="temp-reward100">
-            <label for="temp-reward100">100</label>
-            <input type="checkbox" id="temp-reward111">
-            <label for="temp-reward111">111</label></td>
-        <td>
-            <a id='temp-btn-add' href='javascript:void(0);' onclick='addCustomer();' class='material-icons' style='text-decoration:none;color:lightgreen;'>check_circle</a>
-            <a id='temp-btn-cancel' href='javascript:void(0);' onclick='removeTemp();' class='material-icons' style='text-decoration:none;color:red'>close</a>
-        </td>
-    </tr>
-    `);
-    $('tr#temp-user').fadeIn();
+    addNewCustomer();
 });
 
-function checkPlayTime() {
-    if (parseInt($('input#temp-play-time').val()) <= 0) {
-        $('input#temp-play-time').val(1);
-        $('input#temp-play-time').select();
+function checkPlayTime1() {
+    if (parseInt($('#manage-page > div  > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').val()) <= 0) {
+        $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').val(1);
+        $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="number"]:nth-child(2)').select();
     }
 }
 
-function removeTemp() {
-    $('#temp-user').fadeOut(400, () => {
-        $('#temp-user').remove();
-    });
-}
-
-function addCustomer() {
-    var exist = false;
-    for (i = 0; i < vue.$data.customerList.length; i++) {
-        if ($('input#temp-username').val() == vue.$data.customerList[i].username) {
-            exist = true;
-            break;
+function addNewCustomer() {
+    vex.dialog.open({
+        overlayClosesOnClick: false,
+        appendLocation: '#manage-page',
+        message: 'Add new customers here:',
+        input: [
+            `<label for><input name="customerName" type="text" placeholder="Customer name" required />`,
+            `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Point" required />`,
+            `<label class="col-xs-4" style="font-weight:normal;">Reward</label>
+			<div class="col-xs-8">
+                <div class="pull-right">
+                    <input type="checkbox" name="customerReward30">
+                    <label for="customerReward30">30</label>
+                    <input type="checkbox" name="customerReward50">
+                    <label for="customerReward50">50</label>
+                    <input type="checkbox" name="customerReward70">
+                    <label for="customerReward70">70</label>
+                    <br>
+                    <input type="checkbox" name="customerReward80">
+                    <label for="customerReward80">80</label>
+                    <input type="checkbox" name="customerReward100">
+                    <label for="customerReward100">100</label>
+                    <input type="checkbox" name="customerReward111">
+                    <label for="customerReward111">111</label>
+                </div>
+			</div>`
+        ].join(''),
+        buttons: [
+            $.extend({}, vex.dialog.buttons.YES, { text: 'Add' }),
+            $.extend({}, vex.dialog.buttons.NO, { text: 'Cancel' })
+        ],
+        callback: function (data) {
+            if (data) {
+                var exist = false;
+                for (i = 0; i < vue.$data.customerList.length; i++) {
+                    if (data.customerName == vue.$data.customerList[i].username) {
+                        vex.dialog.alert({
+                            message: 'The customer name existed!',
+                            overlayClosesOnClick: false,
+                            appendLocation: '#manage-page',
+                            callback: (value) => {
+                                if (value) {
+                                    addNewCustomer();
+                                }
+                            }
+                        });
+                        //console.log(vex.getAll());
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    var reward = ["30", "50", "70", "80", "100", "111"],
+                        newUser = {
+                            username: "",
+                            playtime: 0,
+                            release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
+                            expire_card_day: moment().add(60, 'days').calendar(),
+                            card_quantity: 1,
+                            reward: ["false", "false", "false", "false", "false", "false"]
+                        };
+                    newUser.username = data.customerName;
+                    newUser.playtime = data.customerPoint;
+                    for (i = 0; i < reward.length; i++) {
+                        if (data["customerReward" + reward[i]] == "on") {
+                            newUser.reward[i] = "true";
+                        } else {
+                            newUser.reward[i] = "false";
+                        }
+                    }
+                    swal({ padding: 30 });
+                    swal.showLoading();
+                    $.post('/admin/newUser', newUser, (_id) => {
+                        swal.hideLoading();
+                        swal('Sucess', 'The user has been added!', 'success');
+                        newUser._id = _id;
+                        vue.$data.customerList.push(newUser);
+                        vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                    });
+                }
+            }
         }
-    }
-    if ($('input#temp-username').val() == '') {
-        $('[data-toggle="tooltip"]').tooltip({
-            trigger: 'manual'
-        }).tooltip('show');
-        setTimeout(function () {
-            $('[data-toggle="tooltip"]').tooltip('hide');
-        }, 2000);
-    }
-    else if ($('input#temp-play-time').val() == '') {
-        $('[data-toggle="tooltip1"]').tooltip({
-            trigger: 'manual'
-        }).tooltip('show');
-        setTimeout(function () {
-            $('[data-toggle="tooltip1"]').tooltip('hide');
-        }, 2000);
-    }
-    else if (exist == true)
-        swal('Oops...!', 'The username availabled!', 'warning');
-    else {
-        $('#temp-user').fadeOut(400, () => {
-            newUser = {
-                username: $('input#temp-username').val(),
-                playtime: parseInt($('input#temp-play-time').val()),
-                release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
-                expire_card_day: moment().add(60, 'days').calendar(),
-                card_quantity: 1,
-                reward: []
-            };
-            $('#temp-user > td:nth-child(6) > input').each((index, element) => {
-                newUser.reward[index] = $(element).is(':checked').toString();
-            });
-            swal({ padding: 30 });
-            swal.showLoading();
-            $.post('/admin/newUser', newUser, (_id) => {
-                swal.hideLoading();
-                swal('Sucess', 'The user has been added!', 'success');
-                newUser._id = _id;
-                vue.$data.customerList.push(newUser);
-            });
-            $('#temp-user').remove();
-            $('#manage-page > div > table > tbody > tr:last-child').fadeIn();
-        });
-    }
+    });
+    $('#manage-page > div > div.vex.vex-theme-wireframe > div.vex-content > form > div.vex-dialog-input > label > input[type="text"]:nth-child(1)').blur();
 }
 
 function removeCustomer(_id) {
@@ -203,6 +197,7 @@ function saveUpdateCustomer(_id) {
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
                 $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
             });
+            vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
             break;
         }
     }
@@ -216,12 +211,10 @@ function checkInput() {
             'warning'
         )
     else {
-        //swal.showLoading();
         $.post('admin/adminLogin', {
             username: $('input#username').val(),
             password: $('input#password').val()
         }, (result) => {
-            //swal.hideLoading();
             if (result.status) {
                 $('div#login-page').fadeOut(400, () =>
                     $('div#manage-page').fadeIn(400, () => {

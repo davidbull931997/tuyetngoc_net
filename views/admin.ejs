@@ -22,69 +22,89 @@
             <p class="text-center" id="copy-right">&copy; </p>
         </div>
     </div>
-    <div class="container" id="manage-page" style="display:none;">
-        <div class="table-responsive" style="border: 2px solid #000;">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th style="border-bottom:0;" colspan="7"><button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Add new</button></th>
-                    </tr>
-                    <tr>
-                        <th style="border-top:0;">User</th>
-                        <th style="border-top:0;">Points</th>
-                        <th style="border-top:0;">Release Day</th>
-                        <th style="border-top:0;">Expire Day</th>
-                        <th style="border-top:0;">Card Quantity</th>
-                        <th style="border-top:0;">Reward</th>
-                        <th style="border-top:0;">Action</th>
-                    </tr>
-                </thead>
-                <tbody id="vue">
-                    <tr v-for="customer in customerList" :id='customer._id'>
-                        <td>
-                            <p>{{ customer.username }}</p>
-                        </td>
-                        <td>
-                            <p>{{ customer.playtime }}</p>
-                        </td>
-                        <td>
-                            <p>{{ customer.release_card_day }}</p>
-                        </td>
-                        <td>
-                            <p>{{ customer.expire_card_day }}</p>
-                        </td>
-                        <td>
-                            <p>{{ customer.card_quantity }}</p>
-                        </td>
-                        <td>
-                            <input v-if="customer.reward[0] == 'true'" type="checkbox" :id="'reward30-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward30-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward30-'+customer._id">30</label>
-                            <input v-if="customer.reward[1] == 'true'" type="checkbox" :id="'reward50-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward50-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward50-'+customer._id">50</label>
-                            <input v-if="customer.reward[2] == 'true'" type="checkbox" :id="'reward70-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward70-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward70-'+customer._id">70</label>
-                            <br>
-                            <input v-if="customer.reward[3] == 'true'" type="checkbox" :id="'reward80-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward80-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward80-'+customer._id">80</label>
-                            <input v-if="customer.reward[4] == 'true'" type="checkbox" :id="'reward100-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward100-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward100-'+customer._id">100</label>
-                            <input v-if="customer.reward[5] == 'true'" type="checkbox" :id="'reward111-'+customer._id" checked disabled style="cursor:default">
-                            <input v-else type="checkbox" :id="'reward111-'+customer._id" disabled style="cursor:default">
-                            <label :for="'reward111-'+customer._id">111</label>
-                        </td>
-                        <td>
-                            <a href="javascript://" v-on:click="saveUpdateCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:green;display:none;">done</a>
-                            <a href="javascript://" v-on:click="updateCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:silver;">mode_edit</a>
-                            <a href="javascript://" v-on:click="removeCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:red;">close</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div id="manage-page" style="display:none;">
+        <!--Search bar-->
+        <div class="row">
+            <div class="col-md-3">
+                <h2>Custom search field</h2>
+                <div id="custom-search-input">
+                    <div class="input-group col-md-12">
+                        <input type="text" class="form-control input-lg" placeholder="Buscar" />
+                        <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="button">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Customer Table-->
+        <div class="container">
+            <div class="table-responsive" style="border: 2px solid #000;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="border-bottom:0;" colspan="7"><button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Add new</button></th>
+                        </tr>
+                        <tr>
+                            <th style="border-top:0;">User</th>
+                            <th style="border-top:0;">Points</th>
+                            <th style="border-top:0;">Release Day</th>
+                            <th style="border-top:0;">Expire Day</th>
+                            <th style="border-top:0;">Card Quantity</th>
+                            <th style="border-top:0;">Reward</th>
+                            <th style="border-top:0;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vue">
+                        <tr v-for="customer in customerList" :id='customer._id'>
+                            <td>
+                                <p>{{ customer.username }}</p>
+                            </td>
+                            <td>
+                                <p>{{ customer.playtime }}</p>
+                            </td>
+                            <td>
+                                <p>{{ customer.release_card_day }}</p>
+                            </td>
+                            <td>
+                                <p>{{ customer.expire_card_day }}</p>
+                            </td>
+                            <td>
+                                <p>{{ customer.card_quantity }}</p>
+                            </td>
+                            <td>
+                                <input v-if="customer.reward[0] == 'true'" type="checkbox" :id="'reward30-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward30-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward30-'+customer._id">30</label>
+                                <input v-if="customer.reward[1] == 'true'" type="checkbox" :id="'reward50-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward50-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward50-'+customer._id">50</label>
+                                <input v-if="customer.reward[2] == 'true'" type="checkbox" :id="'reward70-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward70-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward70-'+customer._id">70</label>
+                                <br>
+                                <input v-if="customer.reward[3] == 'true'" type="checkbox" :id="'reward80-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward80-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward80-'+customer._id">80</label>
+                                <input v-if="customer.reward[4] == 'true'" type="checkbox" :id="'reward100-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward100-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward100-'+customer._id">100</label>
+                                <input v-if="customer.reward[5] == 'true'" type="checkbox" :id="'reward111-'+customer._id" checked disabled style="cursor:default">
+                                <input v-else type="checkbox" :id="'reward111-'+customer._id" disabled style="cursor:default">
+                                <label :for="'reward111-'+customer._id">111</label>
+                            </td>
+                            <td>
+                                <a href="javascript://" v-on:click="saveUpdateCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:green;display:none;">done</a>
+                                <a href="javascript://" v-on:click="updateCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:#000;">mode_edit</a>
+                                <a href="javascript://" v-on:click="removeCustomer(customer._id)" class="material-icons" style="text-decoration:none;color:red;">close</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <script src="/javascripts/admin.js"></script>

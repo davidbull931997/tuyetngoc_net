@@ -11,9 +11,6 @@ $(() => {
 $(window).resize(() => {
     if ($('#login-page').css('display') == 'block')
         $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
-    if ($('#manage-page').css('display') == 'block') {
-        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 2);
-    }
 });
 
 $(window).on('beforeunload', () => {

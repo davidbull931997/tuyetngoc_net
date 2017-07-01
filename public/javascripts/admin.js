@@ -12,13 +12,7 @@ $(window).resize(() => {
     if ($('#login-page').css('display') == 'block')
         $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
     if ($('#manage-page').css('display') == 'block') {
-        $('#search-bar').css({
-            width: ($(window).width() - $('#manage-page > div.container').width()) / 2,
-            top: $('#manage-page > div.container > div > table > thead').height() - $('#search-bar').height()
-        });
-        $('#search-bar').css({
-            left: $(window).width() - $('#search-bar').width()
-        });
+        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 2);
     }
 });
 
@@ -256,13 +250,7 @@ function checkInput() {
                     $('div#manage-page').fadeIn(400, () => {
                         $('input#username').val('');
                         $('input#password').val('');
-                        $('#search-bar').css({
-                            width: ($(window).width() - $('#manage-page > div.container').width()) / 2,
-                            top: $('#manage-page > div.container > div > table > thead').height() - $('#search-bar').height()
-                        });
-                        $('#search-bar').css({
-                            left: $(window).width() - $('#search-bar').width()
-                        });
+                        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 2);
                     })
                 );
             }

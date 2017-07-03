@@ -1,16 +1,14 @@
+//$('#login-page > div.login').css('background-size', '940px ' + $(window).height() + 'px');
 $(() => {
     swal.setDefaults({
         allowOutsideClick: false,
         allowEscapeKey: false
     });
-    //$('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
     let date = new Date();
-    $('p.text-center#copy-right').append(date.getFullYear());
+    $('p.text-center.copy-right').append(date.getFullYear());
 });
 
 $(window).resize(() => {
-    // if ($('#login-page').css('display') == 'block')
-    //     $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
 });
 
 $(window).on('beforeunload', () => {

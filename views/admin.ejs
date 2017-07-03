@@ -6,20 +6,27 @@
         <%= title %>
     </title>
     <% include ./includes/head %>
+        <link rel="stylesheet" href="/stylesheets/flat-ui.min.css">
 </head>
 
 <body>
-    <div id="login-page" class="container">
-        <div class="col-xs-12">
-            <form class="form-signin">
-                <h3 class="form-signin-heading text-center">Vui lòng nhập tài khoản: </h3>
-                <label for="username" class="sr-only">Tài khoản</label>
-                <input id="username" type="text" class="form-control" placeholder="Tên tài khoản">
-                <input id="password" type="password" class="form-control" placeholder="Mật khẩu" style="margin-top:10px;">
-                <button id="login-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;">Đăng nhập</button>
-            </form>
-            <p class="text-center"><em>Phát triển bởi <a style="text-decoration:none;" href="https://www.facebook.com/davidbull931997" target="_blank"><mark style="background-color:#fcf8e3;color: #00B7FF;">Phan Ngoc Lam</mark></a></em></p>
-            <p class="text-center" id="copy-right">&copy; </p>
+    <div id="login-page" class="container" style="width:970px !important;margin-top:50px;">
+        <div class="login">
+            <div class="login-screen" style="padding: 123px 199px 33px 199px;">
+                <div class="login-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control login-field" placeholder="Enter your name" id="username">
+                        <label class="login-field-icon fui-user" for="login-name"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control login-field" placeholder="Password" id="password">
+                        <label class="login-field-icon fui-lock" for="login-pass"></label>
+                    </div>
+
+                    <a id="login-btn" class="btn btn-primary btn-lg btn-block" href="#">Log in</a>
+                </div>
+            </div>
         </div>
     </div>
     <div id="manage-page" style="display:none;">
@@ -35,9 +42,9 @@
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Tìm khách hàng" style="font-weight:normal;"/>
+                                            <input type="text" class="form-control" placeholder="Tìm khách hàng" style="font-weight:normal;" />
                                             <span class="input-group-btn">
-                                                <button class="btn btn-info" type="button" style="padding-top:2px;margin-top:0;">
+                                                <button class="btn btn-info" type="button" style="padding-top:0px;margin-top:0;">
                                                     <i class="glyphicon glyphicon-search"></i>
                                                 </button>
                                             </span>

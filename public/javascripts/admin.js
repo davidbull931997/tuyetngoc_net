@@ -3,14 +3,14 @@ $(() => {
         allowOutsideClick: false,
         allowEscapeKey: false
     });
-    $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
+    //$('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
     let date = new Date();
     $('p.text-center#copy-right').append(date.getFullYear());
 });
 
 $(window).resize(() => {
-    if ($('#login-page').css('display') == 'block')
-        $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
+    // if ($('#login-page').css('display') == 'block')
+    //     $('#login-page').css('margin-top', ($(window).height() / 2) - ($('#login-page').height() / 2));
 });
 
 $(window).on('beforeunload', () => {
@@ -20,8 +20,9 @@ $(window).on('beforeunload', () => {
     }
 });
 
-$('button#login-btn').click((e) => {
+$('a#login-btn').click((e) => {
     checkInput();
+    return false;
 });
 
 $('input#username').keypress((e) => {
@@ -71,14 +72,22 @@ function searchCustomer() {
 }
 
 function addNewCustomer() {
-    vex.dialog.open({
-        overlayClosesOnClick: false,
-        appendLocation: '#manage-page',
-        message: 'Thêm mới khách hàng:',
-        input: [
-            `<label for><input name="customerName" type="text" placeholder="Tên khách hàng" required />`,
-            `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Điểm" required />`,
-            `<label class="col-xs-4" style="font-weight:normal;">Mốc nhận quà:</label>
+    var updateding = false;
+    for (i = 1; i <= $('tbody#vue > tr').length; i++) {
+        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(7) > a:first-child').css('display') == 'inline-block') {
+            updateding = true;
+            break;
+        }
+    }
+    if (!updateding) {
+        vex.dialog.open({
+            overlayClosesOnClick: false,
+            appendLocation: '#manage-page',
+            message: 'Thêm mới khách hàng:',
+            input: [
+                `<label for><input name="customerName" type="text" placeholder="Tên khách hàng" required />`,
+                `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Điểm" required />`,
+                `<label class="col-xs-4" style="font-weight:normal;">Mốc nhận quà:</label>
 			<div class="col-xs-8">
                 <div class="pull-right">
                     <input type="checkbox" name="customerReward30">
@@ -96,63 +105,64 @@ function addNewCustomer() {
                     <label for="customerReward111">111</label>
                 </div>
 			</div>`
-        ].join(''),
-        buttons: [
-            $.extend({}, vex.dialog.buttons.YES, { text: 'Thêm' }),
-            $.extend({}, vex.dialog.buttons.NO, { text: 'Hủy' })
-        ],
-        callback: function (data) {
-            if (data) {
-                var exist = false;
-                for (i = 0; i < vue.$data.customerList.length; i++) {
-                    if (data.customerName == vue.$data.customerList[i].username) {
-                        vex.dialog.alert({
-                            message: 'Tên khách hàng đã tồn tại!',
-                            overlayClosesOnClick: false,
-                            appendLocation: '#manage-page',
-                            callback: (value) => {
-                                if (value) {
-                                    addNewCustomer();
+            ].join(''),
+            buttons: [
+                $.extend({}, vex.dialog.buttons.YES, { text: 'Thêm' }),
+                $.extend({}, vex.dialog.buttons.NO, { text: 'Hủy' })
+            ],
+            callback: function (data) {
+                if (data) {
+                    var exist = false;
+                    for (i = 0; i < vue.$data.customerList.length; i++) {
+                        if (data.customerName == vue.$data.customerList[i].username) {
+                            vex.dialog.alert({
+                                message: 'Tên khách hàng đã tồn tại!',
+                                overlayClosesOnClick: false,
+                                appendLocation: '#manage-page',
+                                callback: (value) => {
+                                    if (value) {
+                                        addNewCustomer();
+                                    }
                                 }
-                            }
-                        });
-                        //console.log(vex.getAll());
-                        exist = true;
-                        break;
-                    }
-                }
-                if (!exist) {
-                    var reward = ["30", "50", "70", "80", "100", "111"],
-                        newUser = {
-                            username: "",
-                            playtime: 0,
-                            release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
-                            expire_card_day: moment().add(60, 'days').calendar(),
-                            card_quantity: 1,
-                            reward: ["false", "false", "false", "false", "false", "false"]
-                        };
-                    newUser.username = data.customerName;
-                    newUser.playtime = data.customerPoint;
-                    for (i = 0; i < reward.length; i++) {
-                        if (data["customerReward" + reward[i]] == "on") {
-                            newUser.reward[i] = "true";
-                        } else {
-                            newUser.reward[i] = "false";
+                            });
+                            //console.log(vex.getAll());
+                            exist = true;
+                            break;
                         }
                     }
-                    swal({ padding: 30 });
-                    swal.showLoading();
-                    $.post('/admin/newUser', newUser, (_id) => {
-                        swal.hideLoading();
-                        swal('Thành công', 'Đã thêm khách hàng!', 'success');
-                        newUser._id = _id;
-                        vue.$data.customerList.push(newUser);
-                        vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
-                    });
+                    if (!exist) {
+                        var reward = ["30", "50", "70", "80", "100", "111"],
+                            newUser = {
+                                username: "",
+                                playtime: 0,
+                                release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
+                                expire_card_day: moment().add(60, 'days').calendar(),
+                                card_quantity: 1,
+                                reward: ["false", "false", "false", "false", "false", "false"]
+                            };
+                        newUser.username = data.customerName;
+                        newUser.playtime = data.customerPoint;
+                        for (i = 0; i < reward.length; i++) {
+                            if (data["customerReward" + reward[i]] == "on") {
+                                newUser.reward[i] = "true";
+                            } else {
+                                newUser.reward[i] = "false";
+                            }
+                        }
+                        swal({ padding: 30 });
+                        swal.showLoading();
+                        $.post('/admin/newUser', newUser, (_id) => {
+                            swal.hideLoading();
+                            swal('Thành công', 'Đã thêm khách hàng!', 'success');
+                            newUser._id = _id;
+                            vue.$data.customerList.push(newUser);
+                            vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                        });
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 }
 
 function removeCustomer(_id) {
@@ -205,17 +215,17 @@ function updateCustomer(_id) {
 
 function saveUpdateCustomer(_id) {
     for (i = 0; i < vue.$data.customerList.length; i++) {
+        var tempReward = [];
         if (_id == vue.$data.customerList[i]._id) {
-            vue.$data.customerList[i].playtime = $('tr#' + _id + ' > td:nth-child(2) > input').val();
-            vue.$data.customerList[i].card_quantity = $('tr#' + _id + ' > td:nth-child(5) > input').val();
             $('#' + _id + ' > td:nth-child(6) > input').each((index, element) => {
-                vue.$data.customerList[i].reward[index] = $(element).is(':checked').toString();
+                if (vue.$data.customerList[i].reward[index] == $(element).is(':checked').toString())
+                    tempReward[index] = true;
+                else
+                    tempReward[index] = false;
             });
-            swal({ padding: 30 });
-            swal.showLoading();
-            $.post('/admin/updateUser', vue.$data.customerList[i], () => {
-                swal.hideLoading();
-                swal('Thành công', 'Đã cập nhật thành công thông tin khách hàng!', 'success');
+            if ($('tr#' + _id + ' > td:nth-child(2) > input').val() == vue.$data.customerList[i].playtime &&
+                $('tr#' + _id + ' > td:nth-child(5) > input').val() == vue.$data.customerList[i].card_quantity &&
+                (tempReward[0] == true && tempReward[1] == true && tempReward[2] == true && tempReward[3] == true && tempReward[4] == true && tempReward[5] == true)) {
                 $('tr#' + _id + ' > td:nth-child(2) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(5) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
@@ -223,9 +233,30 @@ function saveUpdateCustomer(_id) {
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
                 $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
-                vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
-            });
-            break;
+                break;
+            }
+            else {
+                vue.$data.customerList[i].playtime = $('tr#' + _id + ' > td:nth-child(2) > input').val();
+                vue.$data.customerList[i].card_quantity = $('tr#' + _id + ' > td:nth-child(5) > input').val();
+                $('#' + _id + ' > td:nth-child(6) > input').each((index, element) => {
+                    vue.$data.customerList[i].reward[index] = $(element).is(':checked').toString();
+                });
+                swal({ padding: 30 });
+                swal.showLoading();
+                $.post('/admin/updateUser', vue.$data.customerList[i], () => {
+                    swal.hideLoading();
+                    swal('Thành công', 'Đã cập nhật thành công thông tin khách hàng!', 'success');
+                    $('tr#' + _id + ' > td:nth-child(2) > input').remove();
+                    $('tr#' + _id + ' > td:nth-child(5) > input').remove();
+                    $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
+                    $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
+                    $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
+                    $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
+                    $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+                    vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                });
+                break;
+            }
         }
     }
 }
@@ -247,7 +278,8 @@ function checkInput() {
                     $('div#manage-page').fadeIn(400, () => {
                         $('input#username').val('');
                         $('input#password').val('');
-                        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 2);
+                        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 4);
+                        $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
                     })
                 );
             }

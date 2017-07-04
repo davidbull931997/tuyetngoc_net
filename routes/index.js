@@ -17,6 +17,20 @@ router.get('/admin', function (req, res, next) {
   });
 });
 
+router.post('/getUser', function (req, res, next) {
+  console.log(req.body);
+  mongoHelper.findDocument({ username: req.body }, 'Customers', (result) => {
+    if (result) {
+      res.send({ flag: true, user: result });
+      console.log(result);
+    }
+    else {
+      res.send({ flag: false });
+      console.log(result);
+    }
+  });
+});
+
 router.post('/admin/adminLogin', function (req, res, next) {
   if (req.body.username == 'minhtan' && req.body.password == 'minhtan') {
     if (adminLoginStatus == true) { //logged

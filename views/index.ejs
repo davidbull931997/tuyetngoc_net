@@ -3,23 +3,35 @@
 
 <head>
   <title><%= title %></title>
-  <% include ./includes/head %>
+  <% include ./includes/core-library %>
+  <script src="http://cdn.metroui.org.ua/js/metro.min.js"></script>
+  <link rel="stylesheet" href="http://cdn.metroui.org.ua/css/metro.min.css">
+  <style>
+    body{
+      font-family: 'Roboto Condensed', sans-serif !important;
+    }
+  </style>
 </head>
 
 <body>
   <div id="reg-page" class="container">
     <div class="col-xs-12">
       <form class="form-signin">
-        <h3 class="form-signin-heading text-center">Please input user name to go to profile</h3>
+        <h3 class="form-signin-heading text-center" style="font-family: 'Roboto Condensed', sans-serif;">Nhập tên tài khoản để xem thông tin:</h3>
         <label for="reg-username" class="sr-only">Username</label>
-        <input id="reg-username" type="text" class="form-control" placeholder="Username">
-        <button id="reg-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+        <input id="account-name" type="text" class="form-control" placeholder="Tên tài khoản" data-toggle="tooltip" data-placement="right" title="Vui lòng nhập tên tài khoản">
+        <button id="account-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
       </form>
       <p class="text-center" id="copy-right">Tuyet Ngoc Game Store &copy; </p>
     </div>
   </div>
+  <div id="profile-page" class="container" style="display:none;">
+    
+  </div>
 
   <script src="/javascripts/scripts.js"></script>
+  <script>
+  </script>
 </body>
 
 </html>

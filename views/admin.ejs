@@ -2,10 +2,29 @@
 <html>
 
 <head>
-    <title>
-        <%= title %>
-    </title>
-    <% include ./includes/head %>
+    <% include ./includes/core-library %>
+        <title>
+            <%= title %>
+        </title>
+        <!-- SweetAlert 2 -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.4/sweetalert2.min.css" integrity="sha256-zgaKkhKpXzSrPyXVfczHhygcPSHyhHD+PSWnq3LZHHs="
+            crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.6.4/sweetalert2.min.js" integrity="sha256-ekbnNY56NMALfM+xMBTe2rJkzgVCnmvJUUsKazZQQT8="
+            crossorigin="anonymous"></script>
+        <!-- Vex -->
+        <link rel="stylesheet" href="/stylesheets/vex.css">
+        <link rel="stylesheet" href="/stylesheets/vex-theme-wireframe.css">
+        <script src="/javascripts/vex.combined.min.js"></script>
+        <script>
+            vex.defaultOptions.className = 'vex-theme-wireframe';
+  //vex.defaultOptions.appendLocation = '#manage-page';
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" integrity="sha256-1hjUhpc44NwiNg8OwMu2QzJXhD8kcj+sJA3aCQZoUjg="
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/vi.js" integrity="sha256-R+MnyMH4AoHH9ejOEAM7JKqAFr0u3a22ZoQqWT3eYZE="
+            crossorigin="anonymous"></script>
+        <script src="/javascripts/moment-timezone-with-data.min.js"></script>
         <link rel="stylesheet" href="/stylesheets/flat-ui.min.css">
 </head>
 
@@ -25,7 +44,8 @@
                     </div>
 
                     <a id="login-btn" class="btn btn-primary btn-lg btn-block" href="#">Đăng nhập</a>
-                    <p class="text-center copy-right" style="color:#BDC3C7;margin-bottom:0;">Phát triển bởi <a target="_blank" href="https://www.facebook.com/davidbull931997">Phan Ngoc Lam</a> &copy; </p>
+                    <p class="text-center copy-right" style="color:#BDC3C7;margin-bottom:0;">Phát triển bởi <a target="_blank" href="https://www.facebook.com/davidbull931997">Phan Ngoc Lam</a> &copy;
+                    </p>
                     <p class="text-center" style="color:#BDC3C7;margin-bottom:0;">Ý tưởng: <a target="_blank" href="https://www.facebook.com/Minhtan1520">Minh Tan</a></p>
                 </div>
             </div>

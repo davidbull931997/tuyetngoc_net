@@ -18,16 +18,24 @@ router.get('/admin', function (req, res, next) {
 });
 
 router.post('/getUser', function (req, res, next) {
-  console.log(req.body);
-  mongoHelper.findDocument({ username: req.body }, 'Customers', (result) => {
-    if (result) {
-      res.send({ flag: true, user: result });
-      console.log(result);
+  mongoHelper.findDocuments({}, 'Customers', (result) => {
+    if (result.length) {
+      result.sort((a, b) => b["playtime"] - a["playtime"]);
+      var i, user = {};
+      for (i = 1; i <= result.length; i++) {
+        if (result[i-1].username.toUpperCase() == req.body.username) {
+          user = result[i-1];
+          user.rank = i;
+          break;
+        }
+      }
+      if (user.username != undefined)
+        res.send({ flag: true, user: user });
+      else
+        res.send({ flag: false });
     }
-    else {
+    else
       res.send({ flag: false });
-      console.log(result);
-    }
   });
 });
 

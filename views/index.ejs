@@ -2,35 +2,125 @@
 <html>
 
 <head>
-  <title><%= title %></title>
+  <title>
+    <%= title %>
+  </title>
   <% include ./includes/core-library %>
-  <script src="http://cdn.metroui.org.ua/js/metro.min.js"></script>
-  <link rel="stylesheet" href="http://cdn.metroui.org.ua/css/metro.min.css">
-  <style>
-    body{
-      font-family: 'Roboto Condensed', sans-serif !important;
-    }
-  </style>
+    <script src="http://cdn.metroui.org.ua/js/metro.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.metroui.org.ua/css/metro.min.css">
 </head>
 
 <body>
-  <div id="reg-page" class="container">
+  <!-- Index -->
+  <div id="search-page" class="container">
     <div class="col-xs-12">
       <form class="form-signin">
         <h3 class="form-signin-heading text-center" style="font-family: 'Roboto Condensed', sans-serif;">Nhập tên tài khoản để xem thông tin:</h3>
         <label for="reg-username" class="sr-only">Username</label>
-        <input id="account-name" type="text" class="form-control" placeholder="Tên tài khoản" data-toggle="tooltip" data-placement="right" title="Vui lòng nhập tên tài khoản">
+        <input id="account-name" type="text" class="form-control" placeholder="Tên tài khoản" data-toggle="tooltip" data-placement="right"
+          title="Vui lòng nhập tên tài khoản">
         <button id="account-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
       </form>
-      <p class="text-center" id="copy-right">Tuyet Ngoc Game Store &copy; </p>
+      <p class="text-center" id="copy-right" style="font-family: 'Roboto Condensed', sans-serif;">Tuyet Ngoc Game Store &copy; </p>
     </div>
   </div>
-  <div id="profile-page" class="container" style="display:none;">
-    
+  <!-- Loading effect -->
+  <div class="loader-parent" style="display:none;">
+    <div class="loader"></div>
   </div>
 
-  <script src="/javascripts/scripts.js"></script>
+  <!-- Detail -->
+  <div id="profile-page" class="container" style="display:none;">
+    <div class="col-xs-12" style="margin-top:100px;">
+      <div class="card hovercard">
+        <div class="card-background">
+          <img class="card-bkimg" alt="" src="http://lorempixel.com/100/100/people/9/">
+        </div>
+        <div class="useravatar">
+          <img alt="Không tìm thấy ảnh đại diện" src="/images/logo.png">
+        </div>
+        <div class="card-info"> <span class="card-title">{{user.username}}</span>
+
+        </div>
+      </div>
+
+      <div class="well">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Thứ hạng</th>
+                <th>Điểm</th>
+                <th>Mốc quà đã nhận</th>
+                <th>Ngày cấp thẻ</th>
+                <th>Ngày hết hạn</th>
+                <th>Đã cấp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{user.rank}}</td>
+                <td>{{user.playtime}}</td>
+                <td>
+                  <label class="input-control checkbox default-cursor" style="margin: -5px 0 .325rem 0;">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[0] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">30</span>
+                  </label>
+                  <label class="input-control checkbox default-cursor">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[1] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">50</span>
+                  </label>
+                  <label class="input-control checkbox default-cursor">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[2] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">70</span>
+                  </label>
+                  <label class="input-control checkbox default-cursor">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[3] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">80</span>
+                  </label></br>
+                  <label class="input-control checkbox default-cursor">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[4] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">100</span>
+                  </label>
+                  <label class="input-control checkbox default-cursor">
+                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[5] == 'true'">
+                    <input class="default-cursor" type="checkbox" disabled v-else>
+                    <span class="check"></span>
+                    <span class="caption">111</span>
+                  </label>
+                </td>
+                <!-- Reward -->
+                <td>{{user.release_card_day}}</td>
+                <td>{{user.expire_card_day}}</td>
+                <td>{{user.card_quantity}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/javascripts/index.js"></script>
   <script>
+    var vue = new Vue({
+      el: '#profile-page',
+      data: {
+        user: {
+          reward: ['false', 'false', 'false', 'false', 'false', 'false']//set default value to fix vuejs cannot read
+        }
+      }
+    });
   </script>
 </body>
 

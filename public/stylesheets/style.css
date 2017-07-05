@@ -208,3 +208,7 @@ a {
     border-bottom: .24rem solid;
     border-left: .24rem solid;
 }
+
+.default-cursor{
+    cursor: default !important;
+}

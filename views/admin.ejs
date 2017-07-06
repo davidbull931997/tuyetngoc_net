@@ -23,6 +23,9 @@
 </head>
 
 <body>
+    <div class="loader-parent" style="display:none;">
+        <div class="loader" style="border-top: 10px solid black;"></div>
+    </div>
     <div id="login-page" class="container" style="width:970px !important;">
         <div class="login" style="margin-bottom:0;">
             <div class="login-screen" style="padding: 123px 199px 33px 199px;">
@@ -50,11 +53,41 @@
         <div class="container">
             <div class="table-responsive" style="border: 2px solid #000;">
                 <table class="table table-hover">
-                    <thead>
+                    <!--FIXED TABLE HEAD - VISIBLE -->
+                    <thead id="fixed-thead">
                         <tr>
                             <th style="border-bottom:0;" colspan="7">
                                 <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
-                                <!--Search bar-->
+                                <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
+                                    <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Tìm khách hàng" style="font-weight:normal;" />
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-info" type="button" style="padding-top:0px;margin-top:0;">
+                                                    <i class="glyphicon glyphicon-search"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th style="border-top:0;">Tên khách hàng</th>
+                            <th style="border-top:0;">Điểm</th>
+                            <th style="border-top:0;">Ngày cấp thẻ</th>
+                            <th style="border-top:0;">Ngày hết hạn</th>
+                            <th style="border-top:0;">Đã cấp</th>
+                            <th style="border-top:0;">Mốc nhận quà</th>
+                            <th style="border-top:0;">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <!--REAL TABLE HEAD - HIDDEN -->
+                    <thead style="visibility:hidden;">
+                        <tr>
+                            <th style="border-bottom:0;" colspan="7">
+                                <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
                                         <div class="input-group">

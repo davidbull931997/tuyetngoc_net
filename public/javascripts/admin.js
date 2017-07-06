@@ -1,4 +1,7 @@
-//$('#login-page > div.login').css('background-size', '940px ' + $(window).height() + 'px');
+if ($(window).width() >= 992) {
+    $('div#login-page').css('display', 'none');
+    $('div.loader-parent').css('display', '');
+}
 $(() => {
     if ($(window).width() < 992) {
         $('div#login-page').css('display', 'none');
@@ -12,13 +15,19 @@ $(() => {
             allowOutsideClick: false,
             allowEscapeKey: false
         });
+    } else {
+        setTimeout(function () {
+            $('div.loader-parent').fadeOut(400, () => {
+                $('div#login-page').css('display', '');
+            });
+        }, 1500);
+        swal.setDefaults({
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        let date = new Date();
+        $('p.text-center.copy-right').append(date.getFullYear());
     }
-    swal.setDefaults({
-        allowOutsideClick: false,
-        allowEscapeKey: false
-    });
-    let date = new Date();
-    $('p.text-center.copy-right').append(date.getFullYear());
 });
 
 $(window).resize(() => {
@@ -135,7 +144,6 @@ function addNewCustomer() {
                                     }
                                 }
                             });
-                            //console.log(vex.getAll());
                             exist = true;
                             break;
                         }
@@ -220,6 +228,7 @@ function updateCustomer(_id) {
         $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', '').removeAttr('disabled');
         $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'none');
         $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'inline-block');
+        resizeFixedTableHead();
     }
 }
 
@@ -243,6 +252,7 @@ function saveUpdateCustomer(_id) {
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
                 $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
                 $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+                resizeFixedTableHead();
                 break;
             }
             else {
@@ -264,6 +274,7 @@ function saveUpdateCustomer(_id) {
                     $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
                     $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
                     vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                    resizeFixedTableHead();
                 });
                 break;
             }
@@ -284,14 +295,18 @@ function checkInput() {
             password: $('input#password').val()
         }, (result) => {
             if (result.status) {
-                $('div#login-page').fadeOut(400, () =>
-                    $('div#manage-page').fadeIn(400, () => {
-                        $('input#username').val('');
-                        $('input#password').val('');
-                        $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 4);
-                        $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
-                    })
-                );
+                $('div#login-page').css('display', 'none');
+                $('div.loader-parent').css('display', '');
+                $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
+                    $('input#username').val('');
+                    $('input#password').val('');
+                    $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 4);
+                    $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
+                    resizeFixedTableHead();
+                    $('div.loader-parent').fadeOut(400, () => {
+                        $('div#manage-page').css('visibility', '');
+                    });
+                });
             }
             else {
                 if (result.code == 2)
@@ -308,5 +323,12 @@ function checkInput() {
                     )
             }
         });
+    }
+}
+
+function resizeFixedTableHead() {
+    $('#fixed-thead > tr:nth-child(1) > th').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(1) > th').width());
+    for (i = 0; i < 7; i++) {
+        $('#fixed-thead > tr:nth-child(2) > th:nth-child(' + i + ')').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(2) > th:nth-child(' + i + ')').width());
     }
 }

@@ -237,8 +237,8 @@ function saveUpdateCustomer(_id) {
                 else
                     tempReward[index] = false;
             });
-            if ($('tr#' + _id + ' > td:nth-child(2) > input').val() == vue.$data.customerList[i].playtime &&
-                $('tr#' + _id + ' > td:nth-child(5) > input').val() == vue.$data.customerList[i].card_quantity &&
+            if (($('tr#' + _id + ' > td:nth-child(2) > input').val() == vue.$data.customerList[i].playtime || $('tr#' + _id + ' > td:nth-child(2) > input').val() == '') &&
+                ($('tr#' + _id + ' > td:nth-child(5) > input').val() == vue.$data.customerList[i].card_quantity || $('tr#' + _id + ' > td:nth-child(5) > input').val() == '') &&
                 (tempReward[0] == true && tempReward[1] == true && tempReward[2] == true && tempReward[3] == true && tempReward[4] == true && tempReward[5] == true)) {
                 $('tr#' + _id + ' > td:nth-child(2) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(5) > input').remove();

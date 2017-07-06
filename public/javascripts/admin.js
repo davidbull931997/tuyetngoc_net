@@ -69,7 +69,7 @@ function checkPlayTime1() {
 function searchCustomer() {
     for (i = 0; i < vue.$data.customerList.length; i++) {
         if ($('#custom-search-input > div > input').val().toLowerCase() == vue.$data.customerList[i].username.toLowerCase()) {
-            $('body').animate({ scrollTop: $('#' + vue.$data.customerList[i]._id).offset().top - ($(window).height() / 2) });
+            $('body').animate({ scrollTop: $('#' + vue.$data.customerList[i]._id).offset().top - $('#fixed-thead').height() });
             setTimeout(function (_id) {
                 $('#' + _id).css({
                     transition: '1s',

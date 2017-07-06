@@ -1,3 +1,7 @@
+if ($(window).width() < 992) {
+    $('div.loader-parent').css('display', 'none');
+}
+
 $(() => {
     if ($(window).width() < 992) {
         swal({

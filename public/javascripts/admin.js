@@ -1,5 +1,18 @@
 //$('#login-page > div.login').css('background-size', '940px ' + $(window).height() + 'px');
 $(() => {
+    if ($(window).width() < 992) {
+        $('div#login-page').css('display', 'none');
+        swal({
+            title: 'Không tương thích',
+            type: 'error',
+            text: 'Ứng dụng không hoạt động trên thiết bị di động',
+            showConfirmButton: false,
+            showCloseButton: false,
+            showCancelButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+    }
     swal.setDefaults({
         allowOutsideClick: false,
         allowEscapeKey: false
@@ -11,10 +24,9 @@ $(() => {
 $(window).resize(() => {
 });
 
-$(window).on('beforeunload', () => {
+$(window).on('unload', () => {
     if ($('div#manage-page').css('display') == 'block') {
-        $.post('/admin/adminUnLoad');
-        return null;
+        $.post({ url: '/admin/adminUnLoad', async: false });
     }
 });
 

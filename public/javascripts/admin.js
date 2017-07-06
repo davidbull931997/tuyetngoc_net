@@ -1,10 +1,5 @@
-if ($(window).width() >= 992) {
-    $('div#login-page').css('display', 'none');
-    $('div.loader-parent').css('display', '');
-}
 $(() => {
     if ($(window).width() < 992) {
-        $('div#login-page').css('display', 'none');
         swal({
             title: 'Không tương thích',
             type: 'error',

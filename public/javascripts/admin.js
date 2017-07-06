@@ -148,8 +148,8 @@ function addNewCustomer() {
                             newUser = {
                                 username: "",
                                 playtime: 0,
-                                release_card_day: moment().tz('Asia/Ho_Chi_Minh').format('L'),
-                                expire_card_day: moment().add(60, 'days').calendar(),
+                                release_card_day: '',
+                                expire_card_day: '',
                                 card_quantity: 1,
                                 reward: ["false", "false", "false", "false", "false", "false"]
                             };
@@ -164,12 +164,16 @@ function addNewCustomer() {
                         }
                         swal({ padding: 30 });
                         swal.showLoading();
-                        $.post('/admin/newUser', newUser, (_id) => {
-                            swal.hideLoading();
-                            swal('Thành công', 'Đã thêm khách hàng!', 'success');
-                            newUser._id = _id;
-                            vue.$data.customerList.push(newUser);
-                            vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                        $.get('//api.timezonedb.com/v2/get-time-zone?key=UWMROEOGW3ST&format=json&by=zone&zone=Asia/Ho_Chi_Minh', (result) => {
+                            newUser.release_card_day = new Date(result.timestamp * 1000).toLocaleDateString();
+                            newUser.expire_card_day = new Date((result.timestamp + 5184000) * 1000).toLocaleDateString();
+                            $.post('/admin/newUser', newUser, (_id) => {
+                                swal.hideLoading();
+                                swal('Thành công', 'Đã thêm khách hàng!', 'success');
+                                newUser._id = _id;
+                                vue.$data.customerList.push(newUser);
+                                vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                            });
                         });
                     }
                 }
@@ -186,7 +190,8 @@ function removeCustomer(_id) {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Xác nhận'
+        confirmButtonText: 'Xác nhận',
+        cancelButtonText: 'Hủy bỏ'
     }).then(function () {
         swal({ padding: 30 });
         swal.showLoading();

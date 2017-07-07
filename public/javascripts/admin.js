@@ -169,8 +169,12 @@ function addNewCustomer() {
                         swal({ padding: 30 });
                         swal.showLoading();
                         $.get('//api.timezonedb.com/v2/get-time-zone?key=UWMROEOGW3ST&format=json&by=zone&zone=Asia/Ho_Chi_Minh', (result) => {
-                            newUser.release_card_day = new Date(result.timestamp * 1000).toLocaleDateString();
-                            newUser.expire_card_day = new Date((result.timestamp + 5184000) * 1000).toLocaleDateString();
+                            var temp = {
+                                release: new Date(result.timestamp * 1000),
+                                expire: new Date((result.timestamp + 5184000) * 1000)
+                            }
+                            newUser.release_card_day = temp.release.getUTCDate() + '/'+ (temp.release.getUTCMonth()+1) + '/' + temp.release.getUTCFullYear();
+                            newUser.expire_card_day = temp.expire.getUTCDate() + '/'+ (temp.expire.getUTCMonth()+1) + '/' + temp.expire.getUTCFullYear();
                             $.post('/admin/newUser', newUser, (_id) => {
                                 swal.hideLoading();
                                 swal('Thành công', 'Đã thêm khách hàng!', 'success');

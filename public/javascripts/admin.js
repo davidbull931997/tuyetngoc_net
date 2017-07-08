@@ -331,6 +331,7 @@ function checkInput(submit_parameter) {
                 success: (result) => {
                     if (result.status) {
                         vue.$data.customerList = cl;
+                        vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
                         $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
                             $('input#username').val('');
                             $('input#password').val('');

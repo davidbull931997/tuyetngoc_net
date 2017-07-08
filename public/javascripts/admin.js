@@ -1,7 +1,3 @@
-if ($(window).width() < 992) {
-    $('div.loader-parent').css('display', 'none');
-}
-
 // create an observer instance
 var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -14,6 +10,10 @@ var observer = new MutationObserver(function (mutations) {
 
 // config target, options for observer - observer.observe(target, config)
 observer.observe(document.querySelector('div#manage-page'), { attributes: true });
+
+if ($(window).width() < 992) {
+    $('div.loader-parent').css('display', 'none');
+}
 
 $(() => {
     if ($(window).width() < 992) {
@@ -46,6 +46,7 @@ $(window).resize(() => {
 });
 
 $(window).on('unload', () => {
+    observer.disconnect();
     if ($('div#manage-page').css('display') == 'block') {
         $.post({ url: '/admin/adminUnLoad', async: false });
     }
@@ -319,6 +320,8 @@ function checkInput(submit_parameter) {
                 'warning'
             )
         else {
+            $('div#login-page').css('display', 'none');
+            $('div.loader-parent').removeAttr('style');
             $.post({
                 url: 'admin/adminLogin',
                 data: {
@@ -327,8 +330,6 @@ function checkInput(submit_parameter) {
                 },
                 success: (result) => {
                     if (result.status) {
-                        $('div#login-page').css('display', 'none');
-                        $('div.loader-parent').css('display', '');
                         vue.$data.customerList = cl;
                         $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
                             $('input#username').val('');

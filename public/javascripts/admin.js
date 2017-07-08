@@ -2,6 +2,19 @@ if ($(window).width() < 992) {
     $('div.loader-parent').css('display', 'none');
 }
 
+// create an observer instance
+var observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+        // console.log(mutation);
+        if (mutation.attributeName == 'style' && mutation.target.style.cssText != ('display: none !important;' || 'display: none !important') && !glob_submit) {
+            checkInput(glob_submit);
+        }
+    });
+}), glob_submit = false;
+
+// config target, options for observer - observer.observe(target, config)
+observer.observe(document.querySelector('div#manage-page'), { attributes: true });
+
 $(() => {
     if ($(window).width() < 992) {
         swal({
@@ -39,16 +52,23 @@ $(window).on('unload', () => {
 });
 
 $('a#login-btn').click((e) => {
-    checkInput();
+    glob_submit = true;
+    checkInput(glob_submit);
     return false;
 });
 
 $('input#username').keypress((e) => {
-    if (e.keyCode == 13) checkInput();
+    glob_submit = true;
+    if (e.keyCode == 13)
+        checkInput(glob_submit);
+
 });
 
 $('input#password').keypress((e) => {
-    if (e.keyCode == 13) checkInput();
+    glob_submit = true;
+    if (e.keyCode == 13)
+        checkInput(glob_submit);
+
 });
 
 $('#custom-search-input > div > span > button').click(() => {
@@ -173,8 +193,8 @@ function addNewCustomer() {
                                 release: new Date(result.timestamp * 1000),
                                 expire: new Date((result.timestamp + 5184000) * 1000)
                             }
-                            newUser.release_card_day = temp.release.getUTCDate() + '/'+ (temp.release.getUTCMonth()+1) + '/' + temp.release.getUTCFullYear();
-                            newUser.expire_card_day = temp.expire.getUTCDate() + '/'+ (temp.expire.getUTCMonth()+1) + '/' + temp.expire.getUTCFullYear();
+                            newUser.release_card_day = temp.release.getUTCDate() + '/' + (temp.release.getUTCMonth() + 1) + '/' + temp.release.getUTCFullYear();
+                            newUser.expire_card_day = temp.expire.getUTCDate() + '/' + (temp.expire.getUTCMonth() + 1) + '/' + temp.expire.getUTCFullYear();
                             $.post('/admin/newUser', newUser, (_id) => {
                                 swal.hideLoading();
                                 swal('Thành công', 'Đã thêm khách hàng!', 'success');
@@ -290,47 +310,58 @@ function saveUpdateCustomer(_id) {
     }
 }
 
-function checkInput() {
-    if ($('input#username').val() == '' || $('input#password').val() == '')
-        swal(
-            'Oops...',
-            'Vui lòng nhập tài khoản và mật khẩu',
-            'warning'
-        )
-    else {
-        $.post('admin/adminLogin', {
-            username: $('input#username').val(),
-            password: $('input#password').val()
-        }, (result) => {
-            if (result.status) {
-                $('div#login-page').css('display', 'none');
-                $('div.loader-parent').css('display', '');
-                $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
-                    $('input#username').val('');
-                    $('input#password').val('');
-                    $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 4);
-                    $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
-                    resizeFixedTableHead();
-                    $('div.loader-parent').fadeOut(400, () => {
-                        $('div#manage-page').css('visibility', '');
-                    });
-                });
-            }
-            else {
-                if (result.code == 2)
-                    swal(
-                        'Oops...',
-                        'Tài khoản hoặc mật khẩu sai!',
-                        'error'
-                    )
-                else
-                    swal(
-                        'Oops...',
-                        'Tài khoản đang được sử dụng !',
-                        'error'
-                    )
-            }
-        });
+function checkInput(submit_parameter) {
+    if (submit_parameter) {
+        if ($('input#username').val() == '' || $('input#password').val() == '')
+            swal(
+                'Oops...',
+                'Vui lòng nhập tài khoản và mật khẩu',
+                'warning'
+            )
+        else {
+            $.post({
+                url: 'admin/adminLogin',
+                data: {
+                    username: $('input#username').val(),
+                    password: $('input#password').val()
+                },
+                success: (result) => {
+                    if (result.status) {
+                        $('div#login-page').css('display', 'none');
+                        $('div.loader-parent').css('display', '');
+                        vue.$data.customerList = cl;
+                        $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
+                            $('input#username').val('');
+                            $('input#password').val('');
+                            $('#custom-search-input > div > input').height($('#custom-search-input > div > input').height() - 4);
+                            $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
+                            resizeFixedTableHead();
+                            $('div.loader-parent').fadeOut(400, () => {
+                                $('div#manage-page').css('visibility', '');
+                            });
+                        });
+                    }
+                    else {
+                        if (result.code == 2)
+                            swal(
+                                'Oops...',
+                                'Tài khoản hoặc mật khẩu sai!',
+                                'error'
+                            )
+                        else if (result.code == 1)
+                            swal(
+                                'Oops...',
+                                'Tài khoản đang được sử dụng !',
+                                'error'
+                            )
+                        glob_submit = false;
+                    }
+                },
+                async: false
+            });
+        }
+    } else {
+        userExecuteMaliciousScript();
     }
 }
 
@@ -339,4 +370,9 @@ function resizeFixedTableHead() {
     for (i = 0; i < 7; i++) {
         $('#fixed-thead > tr:nth-child(2) > th:nth-child(' + i + ')').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(2) > th:nth-child(' + i + ')').width());
     }
+}
+
+function userExecuteMaliciousScript() {
+    swal('WARNING!!!', 'You are trying to executed malicious script, stop it!!!', 'error');
+    $('div#manage-page').attr('style', 'display: none !important');
 }

@@ -12,6 +12,7 @@
         <script src="/javascripts/vex.combined.min.js"></script>
         <script>
             vex.defaultOptions.className = 'vex-theme-wireframe';
+            var cl = <%- JSON.stringify(customerList) %>;
         </script>
 
         <link rel="stylesheet" href="/stylesheets/flat-ui.min.css">
@@ -43,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div id="manage-page" style="display:none;">
+    <div id="manage-page" style="display: none !important;">
         <!--Customer Table-->
         <div class="container">
             <div class="table-responsive" style="border: 2px solid #000;">
@@ -161,7 +162,7 @@
         var vue = new Vue({
             el: '#vue',
             data: {
-                customerList: <%- JSON.stringify(customerList) %>
+                customerList:[]
             },
             methods: {
                 removeCustomer: (_id) => {
@@ -175,7 +176,7 @@
                 }
             }
         });
-        vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+        //vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
     </script>
 </body>
 

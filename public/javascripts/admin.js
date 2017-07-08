@@ -346,6 +346,7 @@ function checkInput(submit_parameter) {
                     else {
                         if (result.code == 2) {
                             $('div.loader-parent').css('display', 'none');
+                            $('div#login-page').css('display', '');
                             swal(
                                 'Oops...',
                                 'Tài khoản hoặc mật khẩu sai!',
@@ -354,6 +355,7 @@ function checkInput(submit_parameter) {
                         }
                         else if (result.code == 1) {
                             $('div.loader-parent').css('display', 'none');
+                            $('div#login-page').css('display', '');
                             swal(
                                 'Oops...',
                                 'Tài khoản đang được sử dụng !',

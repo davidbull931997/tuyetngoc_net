@@ -344,18 +344,22 @@ function checkInput(submit_parameter) {
                         });
                     }
                     else {
-                        if (result.code == 2)
+                        if (result.code == 2) {
+                            $('div.loader-parent').css('display', 'none');
                             swal(
                                 'Oops...',
                                 'Tài khoản hoặc mật khẩu sai!',
                                 'error'
                             )
-                        else if (result.code == 1)
+                        }
+                        else if (result.code == 1) {
+                            $('div.loader-parent').css('display', 'none');
                             swal(
                                 'Oops...',
                                 'Tài khoản đang được sử dụng !',
                                 'error'
                             )
+                        }
                         glob_submit = false;
                     }
                 },

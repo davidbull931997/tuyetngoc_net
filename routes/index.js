@@ -23,8 +23,8 @@ router.post('/getUser', function (req, res, next) {
       result.sort((a, b) => b["playtime"] - a["playtime"]);
       var i, user = {};
       for (i = 1; i <= result.length; i++) {
-        if (result[i-1].username.toUpperCase() == req.body.username) {
-          user = result[i-1];
+        if (result[i - 1].username.toUpperCase() == req.body.username) {
+          user = result[i - 1];
           user.rank = i;
           break;
         }
@@ -37,6 +37,10 @@ router.post('/getUser', function (req, res, next) {
     else
       res.send({ flag: false });
   });
+});
+
+router.post('/admin/wakeHerokuApp', function (req, res, next) {
+  res.end();
 });
 
 router.post('/admin/adminLogin', function (req, res, next) {

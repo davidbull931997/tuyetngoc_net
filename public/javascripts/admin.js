@@ -6,7 +6,7 @@ var observer = new MutationObserver(function (mutations) {
             checkInput(glob_submit);
         }
     });
-}), glob_submit = false;
+}), glob_submit = false, wakeHerokuAppTimer;
 
 // config target, options for observer - observer.observe(target, config)
 observer.observe(document.querySelector('div#manage-page'), { attributes: true });
@@ -46,6 +46,7 @@ $(window).resize(() => {
 });
 
 $(window).on('unload', () => {
+    clearInterval(wakeHerokuAppTimer);
     observer.disconnect();
     if ($('div#manage-page').css('display') == 'block') {
         $.post({ url: '/admin/adminUnLoad', async: false });
@@ -340,6 +341,10 @@ function checkInput(submit_parameter) {
                             resizeFixedTableHead();
                             $('div.loader-parent').fadeOut(400, () => {
                                 $('div#manage-page').css('visibility', '');
+                                // send asynchronous POST request to keep herokuapp running
+                                wakeHerokuAppTimer = setInterval(() => {
+                                    $.post('/admin/wakeHerokuApp');
+                                }, 1200000)
                             });
                         });
                     }

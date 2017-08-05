@@ -40,17 +40,19 @@ router.post('/getUser', function (req, res, next) {
 });
 
 router.post('/admin/wakeHerokuApp', function (req, res, next) {
+  console.log(`Wake Heroku app at ip address: ${req.ip}`);
   res.end();
 });
 
 router.post('/admin/adminLogin', function (req, res, next) {
-  if (req.body.username == 'minhtan' && req.body.password == 'minhtan') {
+  if (req.body.username == 'tabaminhtan' && req.body.password == '0947707703') {
     if (adminLoginStatus == true) { //logged
       res.send({
         status: false,
         code: 1
       });
     } else {
+      console.log(`Admin login at ip adress: ${req.ip}`);
       adminLoginStatus = true;
       res.send({ status: true });
     }

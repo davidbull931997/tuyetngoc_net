@@ -54,7 +54,7 @@ $(window).on('unload', () => {
 });
 
 $('a#login-btn').click((e) => {
-    glob_submit = true;
+        glob_submit = true;
     checkInput(glob_submit);
     return false;
 });
@@ -313,6 +313,7 @@ function saveUpdateCustomer(_id) {
 }
 
 function checkInput(submit_parameter) {
+    if($('#login-btn').hasClass('btn-primary') && $('#login-btn').css('background-color') == 'silver' && $('#login-btn').css('color') == 'white') return;
     if (submit_parameter) {
         if ($('input#username').val() == '' || $('input#password').val() == '')
             swal(
@@ -321,6 +322,7 @@ function checkInput(submit_parameter) {
                 'warning'
             )
         else {
+            $('#login-btn').removeClass('btn-primary').css({ 'background-color': 'silver', color: 'white' });
             $('div#login-page').css('display', 'none');
             $('div.loader-parent').removeAttr('style');
             $.post({
@@ -349,9 +351,10 @@ function checkInput(submit_parameter) {
                         });
                     }
                     else {
+                        $('div.loader-parent').css('display', 'none');
+                        $('#login-btn').addClass('btn-primary').removeAttr('style');
+                        $('div#login-page').css('display', '');
                         if (result.code == 2) {
-                            $('div.loader-parent').css('display', 'none');
-                            $('div#login-page').css('display', '');
                             swal(
                                 'Oops...',
                                 'Tài khoản hoặc mật khẩu sai!',
@@ -359,8 +362,6 @@ function checkInput(submit_parameter) {
                             )
                         }
                         else if (result.code == 1) {
-                            $('div.loader-parent').css('display', 'none');
-                            $('div#login-page').css('display', '');
                             swal(
                                 'Oops...',
                                 'Tài khoản đang được sử dụng !',

@@ -1,0 +1,1 @@
+window.CryptoJS = require('crypto-js');

@@ -2,130 +2,147 @@
 <html>
 
 <head>
-  <title>
-    <%= title %>
-  </title>
-  <% include ./includes/core-library %>
-    <link rel="stylesheet" href="/stylesheets/metro.min.css">
-    <style>
-      @media screen and (max-width: 960px) {
-        .container{width: 100%;}
-      }
-    </style>
+    <title>
+        <%= title %>
+    </title>
+    <% include ./includes/core-library %>
+        <link rel="stylesheet" href="/stylesheets/metro.min.css">
+        <style>
+            @media screen and (max-width: 960px) {
+                .container {
+                    width: 100%;
+                }
+            }
+        </style>
 </head>
 
 <body>
-  <!-- Index -->
-  <div id="search-page" class="container">
-    <div class="col-xs-12">
-      <form class="form-signin">
-        <h3 class="form-signin-heading text-center" style="font-family: 'Roboto Condensed', sans-serif;">Nhập tên tài khoản để xem thông tin:</h3>
-        <label for="reg-username" class="sr-only">Username</label>
-        <input id="account-name" type="text" class="form-control" placeholder="Tên tài khoản" data-toggle="tooltip" data-placement="right"
-          title="Vui lòng nhập tên tài khoản">
-        <button id="account-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:10px;"><i class="fa fa-search" aria-hidden="true"></i> Tìm</button>
-      </form>
-      <p class="text-center" id="copy-right" style="font-family: 'Roboto Condensed', sans-serif;">Tuyet Ngoc Game Store &copy; </p>
+    <!-- Index -->
+    <div id="search-page" class="container">
+        <div class="col-xs-12">
+            <form class="form-signin">
+                <h3 class="form-signin-heading text-center" style="font-family: 'Roboto Condensed', sans-serif;">Nhập tên tài khoản để xem thông tin:</h3>
+                <label for="reg-username" class="sr-only">Username</label>
+                <input id="account-name" type="text" class="form-control" placeholder="Tên tài khoản" data-toggle="tooltip" data-placement="right"
+                    title="Vui lòng nhập tên tài khoản" style="margin-bottom:10px" />
+                <input id="account-password" type="password" class="form-control" placeholder="Mật khẩu" data-toggle="tooltip" data-placement="right"
+                    title="Vui lòng nhập mật khẩu" />
+                <button id="account-btn" class="btn btn-lg btn-primary btn-block" type="button" style="margin-top:20px;">Đăng nhập</button>
+            </form>
+            <p class="text-center" id="copy-right" style="font-family: 'Roboto Condensed', sans-serif;">Tuyet Ngoc Game Store &copy; </p>
+        </div>
     </div>
-  </div>
-  <!-- Loading effect -->
-  <div class="loader-parent" style="display:none;">
-    <div class="loader"></div>
-  </div>
-
-  <!-- Detail -->
-  <div id="profile-page" class="container" style="display:none !important;">
-    <div class="col-xs-12" style="margin-top:100px;">
-      <div class="card hovercard">
-        <div class="card-background">
-          <img class="card-bkimg" alt="" src="//d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/Ve4BTYxDx/panoramic-blue-technology-background-with-lines_ejevvzaafe__S0000.jpg">
-        </div>
-        <div class="useravatar">
-          <img alt="Không tìm thấy ảnh đại diện" src="/images/logo.png">
-        </div>
-        <div class="card-info"> <span class="card-title" style="color:whitesmoke;">{{user.username}}</span>
-
-        </div>
-      </div>
-
-      <div class="well">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Thứ hạng</th>
-                <th>Điểm</th>
-                <th>Mốc quà đã nhận</th>
-                <th>Ngày cấp thẻ</th>
-                <th>Ngày hết hạn</th>
-                <th>Đã cấp</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{user.rank}}</td>
-                <td>{{user.playtime}}</td>
-                <td>
-                  <label class="input-control checkbox default-cursor" style="margin: -5px 0 .325rem 0;">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[0] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">30</span>
-                  </label>
-                  <label class="input-control checkbox default-cursor">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[1] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">50</span>
-                  </label>
-                  <label class="input-control checkbox default-cursor">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[2] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">70</span>
-                  </label>
-                  <label class="input-control checkbox default-cursor">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[3] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">80</span>
-                  </label>
-                  <label class="input-control checkbox default-cursor">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[4] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">100</span>
-                  </label>
-                  <label class="input-control checkbox default-cursor">
-                    <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[5] == 'true'">
-                    <input class="default-cursor" type="checkbox" disabled v-else>
-                    <span class="check"></span>
-                    <span class="caption">111</span>
-                  </label>
-                </td>
-                <!-- Reward -->
-                <td>{{user.release_card_day}}</td>
-                <td>{{user.expire_card_day}}</td>
-                <td>{{user.card_quantity}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <!-- Loading effect -->
+    <div class="loader-parent" style="display:none;">
+        <div class="loader"></div>
     </div>
-  </div>
 
-  <script src="/javascripts/index.min.js"></script>
-  <script>
-    var vue = new Vue({
-      el: '#profile-page',
-      data: {
-        user: {
-          reward: ['false', 'false', 'false', 'false', 'false', 'false']//set default value to fix vuejs cannot read
-        }
-      }
-    });
-  </script>
+    <!-- Detail -->
+    <div id="profile-page" class="container" style="display:none !important;">
+        <div class="col-xs-12" style="margin-top:50px;">
+            <div class="card hovercard">
+                <div class="card-background">
+                    <img class="card-bkimg" alt="" src="//d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/Ve4BTYxDx/panoramic-blue-technology-background-with-lines_ejevvzaafe__S0000.jpg">
+                </div>
+                <div class="useravatar">
+                    <img alt="Không tìm thấy ảnh đại diện" src="/images/logo.png">
+                </div>
+                <div class="card-info">
+                    <span class="card-title" style="color:whitesmoke;">{{user.username}}</span>
+
+                </div>
+            </div>
+
+            <div class="well">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <!-- <th>Thứ hạng</th> -->
+                                <th>Điểm</th>
+                                <th>Mốc quà đã nhận</th>
+                                <th>Ngày cấp thẻ</th>
+                                <th>Ngày hết hạn</th>
+                                <th>Đã cấp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- <td>{{user.rank}}</td> -->
+                                <td>{{user.playtime}}</td>
+                                <td>
+                                    <label class="input-control checkbox default-cursor" style="margin: -5px 0 .325rem 0;">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[0] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">30</span>
+                                    </label>
+                                    <label class="input-control checkbox default-cursor">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[1] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">50</span>
+                                    </label>
+                                    <label class="input-control checkbox default-cursor">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[2] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">70</span>
+                                    </label>
+                                    <label class="input-control checkbox default-cursor">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[3] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">80</span>
+                                    </label>
+                                    <label class="input-control checkbox default-cursor">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[4] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">100</span>
+                                    </label>
+                                    <label class="input-control checkbox default-cursor">
+                                        <input class="default-cursor" type="checkbox" disabled checked v-if="user.reward[5] == 'true'">
+                                        <input class="default-cursor" type="checkbox" disabled v-else>
+                                        <span class="check"></span>
+                                        <span class="caption">111</span>
+                                    </label>
+                                </td>
+                                <!-- Reward -->
+                                <td>{{user.release_card_day}}</td>
+                                <td>{{user.expire_card_day}}</td>
+                                <td>{{user.card_quantity}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="game-container">
+            <div class="row text-center">
+                <p style="font-size: 20px">Bạn có {{user.roll}} lượt quay</p>
+            </div>
+            <div class="row" id="game" style="text-align:-webkit-center;padding-bottom: 20px">
+
+            </div>
+        </div>
+    </div>
+    <!-- lucky wheel game -->
+    <script src="/javascripts/game/phaser.min.js"></script>
+    <script src="/javascripts/game/game.min.js"></script>
+    <% include ./includes/firebase-client %>
+    <script src="/javascripts/browserify.client.js"></script>
+    <script src="/javascripts/index.min.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#profile-page',
+            data: {
+                user: {
+                    reward: ['false', 'false', 'false', 'false', 'false', 'false']//set default value to fix vuejs cannot read
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

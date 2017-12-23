@@ -52,7 +52,7 @@
                     <!--FIXED TABLE HEAD - VISIBLE -->
                     <thead id="fixed-thead">
                         <tr>
-                            <th style="border-bottom:0;" colspan="7">
+                            <th style="border-bottom:0;" colspan="8">
                                 <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;width:200px;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
@@ -74,6 +74,7 @@
                             <th style="border-top:0;">Ngày cấp thẻ</th>
                             <th style="border-top:0;">Ngày hết hạn</th>
                             <th style="border-top:0;">Đã cấp</th>
+                            <th style="border-top:0;">Lượt quay số</th>
                             <th style="border-top:0;">Mốc nhận quà</th>
                             <th style="border-top:0;">Thao tác</th>
                         </tr>
@@ -82,7 +83,7 @@
                     <!--REAL TABLE HEAD - HIDDEN -->
                     <thead style="visibility:hidden;">
                         <tr>
-                            <th style="border-bottom:0;" colspan="7">
+                            <th style="border-bottom:0;" colspan="8">
                                 <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
@@ -104,6 +105,7 @@
                             <th style="border-top:0;">Ngày cấp thẻ</th>
                             <th style="border-top:0;">Ngày hết hạn</th>
                             <th style="border-top:0;">Đã cấp</th>
+                            <th style="border-top:0;">Lượt quay số</th>
                             <th style="border-top:0;">Mốc nhận quà</th>
                             <th style="border-top:0;">Thao tác</th>
                         </tr>
@@ -114,7 +116,7 @@
                                 <p>{{ customer.username }}</p>
                             </td>
                             <td>
-                                <p>{{ customer.playtime }}</p>
+                                <p>{{ customer.playtime || 0 }}</p>
                             </td>
                             <td>
                                 <p>{{ customer.release_card_day }}</p>
@@ -123,7 +125,10 @@
                                 <p>{{ customer.expire_card_day }}</p>
                             </td>
                             <td>
-                                <p>{{ customer.card_quantity }}</p>
+                                <p>{{ customer.card_quantity || 0 }}</p>
+                            </td>
+                            <td>
+                                <p>{{ customer.roll || 0 }}</p>
                             </td>
                             <td>
                                 <input v-if="customer.reward[0] == 'true'" type="checkbox" :id="'reward30-'+customer._id" checked disabled style="cursor:default">
@@ -157,6 +162,8 @@
             </div>
         </div>
     </div>
+    <% include ./includes/firebase-client %>
+    <script src="/javascripts/browserify.client.js"></script>
     <script src="/javascripts/admin.min.js"></script>
     <script>
         var vue = new Vue({

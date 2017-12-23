@@ -1,3 +1,4 @@
+// var CryptoJS = require('./browserify.client');
 // create an observer instance
 var observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
@@ -54,7 +55,7 @@ $(window).on('unload', () => {
 });
 
 $('a#login-btn').click((e) => {
-        glob_submit = true;
+    glob_submit = true;
     checkInput(glob_submit);
     return false;
 });
@@ -114,7 +115,7 @@ function searchCustomer() {
 function addNewCustomer() {
     var updateding = false;
     for (i = 1; i <= $('tbody#vue > tr').length; i++) {
-        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(7) > a:first-child').css('display') == 'inline-block') {
+        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(8) > a:first-child').css('display') == 'inline-block') {
             updateding = true;
             break;
         }
@@ -125,7 +126,9 @@ function addNewCustomer() {
             appendLocation: '#manage-page',
             message: 'Thêm mới khách hàng:',
             input: [
-                `<label for><input name="customerName" type="text" placeholder="Tên khách hàng" required />`,
+                `<input name="customerName" type="text" placeholder="Tên đăng nhập" required />`,
+                `<input name="customerPassword" type="password" placeholder="Mật khẩu" required />`,
+                `<label for='customerRoll'>Vòng quay: </label><input min="0" name="customerRoll" type="number" required />`,
                 `<input name="customerPoint" min=1 oninput="checkPlayTime1();" type="number" placeholder="Điểm" required />`,
                 `<label class="col-xs-4" style="font-weight:normal;">Mốc nhận quà:</label>
 			<div class="col-xs-8">
@@ -170,16 +173,31 @@ function addNewCustomer() {
                         }
                     }
                     if (!exist) {
+                        if (data.customerName.trim().indexOf(' ') > -1)
+                            return vex.dialog.alert({
+                                message: 'Tên đăng nhập không được có khoảng trống!',
+                                overlayClosesOnClick: false,
+                                appendLocation: '#manage-page',
+                                callback: (value) => {
+                                    if (value) {
+                                        addNewCustomer();
+                                    }
+                                }
+                            });
                         var reward = ["30", "50", "70", "80", "100", "111"],
                             newUser = {
-                                username: "",
+                                username: '',
+                                password: '',
+                                roll: 0,
                                 playtime: 0,
                                 release_card_day: '',
                                 expire_card_day: '',
                                 card_quantity: 1,
                                 reward: ["false", "false", "false", "false", "false", "false"]
                             };
-                        newUser.username = data.customerName;
+                        newUser.username = data.customerName.trim().toLowerCase();
+                        newUser.password = CryptoJS.MD5(data.customerPassword).toString();
+                        newUser.roll = data.customerRoll;
                         newUser.playtime = data.customerPoint;
                         for (i = 0; i < reward.length; i++) {
                             if (data["customerReward" + reward[i]] == "on") {
@@ -190,21 +208,34 @@ function addNewCustomer() {
                         }
                         swal({ padding: 30 });
                         swal.showLoading();
-                        $.get('//api.timezonedb.com/v2/get-time-zone?key=UWMROEOGW3ST&format=json&by=zone&zone=Asia/Ho_Chi_Minh', (result) => {
-                            var temp = {
-                                release: new Date(result.timestamp * 1000),
-                                expire: new Date((result.timestamp + 5184000) * 1000)
-                            }
-                            newUser.release_card_day = temp.release.getUTCDate() + '/' + (temp.release.getUTCMonth() + 1) + '/' + temp.release.getUTCFullYear();
-                            newUser.expire_card_day = temp.expire.getUTCDate() + '/' + (temp.expire.getUTCMonth() + 1) + '/' + temp.expire.getUTCFullYear();
-                            $.post('/admin/newUser', newUser, (_id) => {
-                                swal.hideLoading();
-                                swal('Thành công', 'Đã thêm khách hàng!', 'success');
-                                newUser._id = _id;
-                                vue.$data.customerList.push(newUser);
-                                vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
-                            });
+                        var temp = {
+                            release: new Date(Date.now()),
+                            expire: new Date(Date.now() + 5184000000)
+                        }
+                        newUser.release_card_day = temp.release.getDate() + '/' + (temp.release.getMonth() + 1) + '/' + temp.release.getFullYear();
+                        newUser.expire_card_day = temp.expire.getDate() + '/' + (temp.expire.getMonth() + 1) + '/' + temp.expire.getFullYear();
+                        $.post('/admin/newUser', newUser, (_id) => {
+                            swal.hideLoading();
+                            swal('Thành công', 'Đã thêm khách hàng!', 'success');
+                            newUser._id = _id;
+                            vue.$data.customerList.push(newUser);
+                            vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
                         });
+                        // $.get('//api.timezonedb.com/v2/get-time-zone?key=UWMROEOGW3ST&format=json&by=zone&zone=Asia/Ho_Chi_Minh', (result) => {
+                        //     var temp = {
+                        //         release: new Date(result.timestamp * 1000),
+                        //         expire: new Date((result.timestamp + 5184000) * 1000)
+                        //     }
+                        //     newUser.release_card_day = temp.release.getUTCDate() + '/' + (temp.release.getUTCMonth() + 1) + '/' + temp.release.getUTCFullYear();
+                        //     newUser.expire_card_day = temp.expire.getUTCDate() + '/' + (temp.expire.getUTCMonth() + 1) + '/' + temp.expire.getUTCFullYear();
+                        //     $.post('/admin/newUser', newUser, (_id) => {
+                        //         swal.hideLoading();
+                        //         swal('Thành công', 'Đã thêm khách hàng!', 'success');
+                        //         newUser._id = _id;
+                        //         vue.$data.customerList.push(newUser);
+                        //         vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                        //     });
+                        // });
                     }
                 }
             }
@@ -250,14 +281,24 @@ function updateCustomer(_id) {
         var value = {
             point: parseInt($('tr#' + _id + ' > td:nth-child(2)').text()),
             card_quantity: parseInt($('tr#' + _id + ' > td:nth-child(5)').text()),
+            roll: parseInt($('tr#' + _id + ' > td:nth-child(6)').text()),
+        }
+        var oldWidth = {
+            password: $('tr#' + _id + ' > td:nth-child(1) > p').css('width'),
+            point: $('tr#' + _id + ' > td:nth-child(2) > p').css('width'),
+            card_quantity: $('tr#' + _id + ' > td:nth-child(5) > p').css('width'),
+            roll: $('tr#' + _id + ' > td:nth-child(6) > p').css('width')
         }
         $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'none');
         $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'none');
-        $('tr#' + _id + ' > td:nth-child(2)').append('<input type="number" step="1" value=' + value.point + ' min="1">');
-        $('tr#' + _id + ' > td:nth-child(5)').append('<input type="number" step="1" value=' + value.card_quantity + ' min="1">');
-        $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', '').removeAttr('disabled');
-        $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'none');
-        $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'inline-block');
+        $('tr#' + _id + ' > td:nth-child(6) > p').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(1)').append('<input type="password" placeholder="Mật khẩu mới" style="width:' + oldWidth.password + '">');//password input
+        $('tr#' + _id + ' > td:nth-child(2)').append('<input type="number" step="1" value=' + value.point + ' min="1" style="width:' + oldWidth.point + '">');
+        $('tr#' + _id + ' > td:nth-child(5)').append('<input type="number" step="1" value=' + value.card_quantity + ' min="1" style="width:' + oldWidth.card_quantity + '">');
+        $('tr#' + _id + ' > td:nth-child(6)').append('<input type="number" step="1" value=' + value.roll + ' min="1" style="width:' + oldWidth.roll + '">');
+        $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', '').removeAttr('disabled');
+        $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'inline-block');
         resizeFixedTableHead();
     }
 }
@@ -266,29 +307,36 @@ function saveUpdateCustomer(_id) {
     for (i = 0; i < vue.$data.customerList.length; i++) {
         var tempReward = [];
         if (_id == vue.$data.customerList[i]._id) {
-            $('#' + _id + ' > td:nth-child(6) > input').each((index, element) => {
+            $('#' + _id + ' > td:nth-child(7) > input').each((index, element) => {
                 if (vue.$data.customerList[i].reward[index] == $(element).is(':checked').toString())
                     tempReward[index] = true;
                 else
                     tempReward[index] = false;
             });
-            if (($('tr#' + _id + ' > td:nth-child(2) > input').val() == vue.$data.customerList[i].playtime || $('tr#' + _id + ' > td:nth-child(2) > input').val() == '') &&
+            if (($('tr#' + _id + ' > td:nth-child(1) > input').val() == '') &&
+                ($('tr#' + _id + ' > td:nth-child(2) > input').val() == vue.$data.customerList[i].playtime || $('tr#' + _id + ' > td:nth-child(2) > input').val() == '') &&
                 ($('tr#' + _id + ' > td:nth-child(5) > input').val() == vue.$data.customerList[i].card_quantity || $('tr#' + _id + ' > td:nth-child(5) > input').val() == '') &&
+                ($('tr#' + _id + ' > td:nth-child(6) > input').val() == vue.$data.customerList[i].roll || $('tr#' + _id + ' > td:nth-child(6) > input').val() == '') &&
                 (tempReward[0] == true && tempReward[1] == true && tempReward[2] == true && tempReward[3] == true && tempReward[4] == true && tempReward[5] == true)) {
+                $('tr#' + _id + ' > td:nth-child(1) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(2) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(5) > input').remove();
+                $('tr#' + _id + ' > td:nth-child(6) > input').remove();
                 $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
                 $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
-                $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
-                $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
-                $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+                $('tr#' + _id + ' > td:nth-child(6) > p').css('display', 'block');
+                $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'none');
+                $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'inline-block');
+                $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', 'default').attr('disabled', true);
                 resizeFixedTableHead();
                 break;
             }
             else {
+                vue.$data.customerList[i].password = CryptoJS.MD5($('tr#' + _id + ' > td:nth-child(1) > input').val()).toString();
                 vue.$data.customerList[i].playtime = $('tr#' + _id + ' > td:nth-child(2) > input').val();
                 vue.$data.customerList[i].card_quantity = $('tr#' + _id + ' > td:nth-child(5) > input').val();
-                $('#' + _id + ' > td:nth-child(6) > input').each((index, element) => {
+                vue.$data.customerList[i].roll = $('tr#' + _id + ' > td:nth-child(6) > input').val();
+                $('#' + _id + ' > td:nth-child(7) > input').each((index, element) => {
                     vue.$data.customerList[i].reward[index] = $(element).is(':checked').toString();
                 });
                 swal({ padding: 30 });
@@ -296,13 +344,16 @@ function saveUpdateCustomer(_id) {
                 $.post('/admin/updateUser', vue.$data.customerList[i], () => {
                     swal.hideLoading();
                     swal('Thành công', 'Đã cập nhật thành công thông tin khách hàng!', 'success');
+                    $('tr#' + _id + ' > td:nth-child(1) > input').remove();
                     $('tr#' + _id + ' > td:nth-child(2) > input').remove();
                     $('tr#' + _id + ' > td:nth-child(5) > input').remove();
+                    $('tr#' + _id + ' > td:nth-child(6) > input').remove();
                     $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
                     $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
-                    $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(1)').css('display', 'none');
-                    $('tr#' + _id + ' > td:nth-child(7) > a:nth-child(2)').css('display', 'inline-block');
-                    $('tr#' + _id + ' > td:nth-child(6) > input').css('cursor', 'default').attr('disabled', true);
+                    $('tr#' + _id + ' > td:nth-child(6) > p').css('display', 'block');
+                    $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'none');
+                    $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'inline-block');
+                    $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', 'default').attr('disabled', true);
                     vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
                     resizeFixedTableHead();
                 });
@@ -313,7 +364,7 @@ function saveUpdateCustomer(_id) {
 }
 
 function checkInput(submit_parameter) {
-    if($('#login-btn').hasClass('btn-primary') && $('#login-btn').css('background-color') == 'silver' && $('#login-btn').css('color') == 'white') return;
+    if ($('#login-btn').hasClass('btn-primary') && $('#login-btn').css('background-color') == 'silver' && $('#login-btn').css('color') == 'white') return;
     if (submit_parameter) {
         if ($('input#username').val() == '' || $('input#password').val() == '')
             swal(
@@ -342,6 +393,26 @@ function checkInput(submit_parameter) {
                             $('#custom-search-input > div > span > button').height($('#add-new-btn').height() + 18);
                             resizeFixedTableHead();
                             $('div.loader-parent').fadeOut(400, () => {
+                                firebase.firestore()
+                                    .collection('customers')
+                                    .onSnapshot(ss => {
+                                        ss.docChanges.forEach(dc => {
+                                            // console.log(dc);
+                                            // console.log(dc.doc.data());
+                                            if (dc.type == 'modified')
+                                                for (let i = 0; i < vue.customerList.length; i++) {
+                                                    if (vue.customerList[i]._id == dc.doc.id) {
+                                                        vue.customerList[i].roll = parseInt(dc.doc.data().roll);
+                                                        break;
+                                                    }
+                                                }
+                                            // vue.customerList.forEach(customer => {
+                                            //     if (customer._id == dc.doc.id) {
+
+                                            //     }
+                                            // });
+                                        });
+                                    }, err => console.log(err));
                                 $('div#manage-page').css('visibility', '');
                                 // send asynchronous POST request to keep herokuapp running
                                 wakeHerokuAppTimer = setInterval(() => {
@@ -381,7 +452,7 @@ function checkInput(submit_parameter) {
 
 function resizeFixedTableHead() {
     $('#fixed-thead > tr:nth-child(1) > th').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(1) > th').width());
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 8; i++) {
         $('#fixed-thead > tr:nth-child(2) > th:nth-child(' + i + ')').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(2) > th:nth-child(' + i + ')').width());
     }
 }

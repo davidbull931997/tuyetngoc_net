@@ -37,9 +37,10 @@
                     </div>
 
                     <a id="login-btn" class="btn btn-primary btn-lg btn-block" href="#">Đăng nhập</a>
-                    <p class="text-center copy-right" style="color:#BDC3C7;margin-bottom:0;">Phát triển bởi <a target="_blank" href="https://www.facebook.com/davidbull931997">Phan Ngoc Lam</a> &copy;
+                    <p class="text-center copy-right" style="color:#BDC3C7;margin-bottom:0;">
+                        <a target="_blank" href="https://www.facebook.com/davidbull931997">Phan Ngoc Lam</a> &copy;
                     </p>
-                    <p class="text-center" style="color:#BDC3C7;margin-bottom:0;">Ý tưởng: <a target="_blank" href="https://www.facebook.com/Minhtan1520">Minh Tan</a></p>
+                    <!-- <p class="text-center" style="color:#BDC3C7;margin-bottom:0;">Ý tưởng: <a target="_blank" href="https://www.facebook.com/Minhtan1520">Minh Tan</a></p> -->
                 </div>
             </div>
         </div>
@@ -52,7 +53,7 @@
                     <!--FIXED TABLE HEAD - VISIBLE -->
                     <thead id="fixed-thead">
                         <tr>
-                            <th style="border-bottom:0;" colspan="8">
+                            <th style="border-bottom:0;" colspan="9">
                                 <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;width:200px;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
@@ -74,7 +75,8 @@
                             <th style="border-top:0;">Ngày cấp thẻ</th>
                             <th style="border-top:0;">Ngày hết hạn</th>
                             <th style="border-top:0;">Đã cấp</th>
-                            <th style="border-top:0;">Lượt quay số</th>
+                            <th style="border-top:0;">Lượt quay</th>
+                            <th style="border-top:0;">Lịch sử quay</th>
                             <th style="border-top:0;">Mốc nhận quà</th>
                             <th style="border-top:0;">Thao tác</th>
                         </tr>
@@ -83,7 +85,7 @@
                     <!--REAL TABLE HEAD - HIDDEN -->
                     <thead style="visibility:hidden;">
                         <tr>
-                            <th style="border-bottom:0;" colspan="8">
+                            <th style="border-bottom:0;" colspan="9">
                                 <button id="add-new-btn" class="pull-right btn btn-success" type="button" style="border-radius:0px;">Thêm mới</button>
                                 <div class="pull-right" id="search-bar" style="padding-left:0;padding-right:0;">
                                     <div id="custom-search-input" style="padding-top:0;padding-bottom:0;border-radius:0;">
@@ -105,7 +107,8 @@
                             <th style="border-top:0;">Ngày cấp thẻ</th>
                             <th style="border-top:0;">Ngày hết hạn</th>
                             <th style="border-top:0;">Đã cấp</th>
-                            <th style="border-top:0;">Lượt quay số</th>
+                            <th style="border-top:0;">Lượt quay</th>
+                            <th style="border-top:0;">Lịch sử quay</th>
                             <th style="border-top:0;">Mốc nhận quà</th>
                             <th style="border-top:0;">Thao tác</th>
                         </tr>
@@ -129,6 +132,9 @@
                             </td>
                             <td>
                                 <p>{{ customer.roll || 0 }}</p>
+                            </td>
+                            <td>
+                                <a href="javascript://" @click="showRollHistory(customer)">Xem</a>
                             </td>
                             <td>
                                 <input v-if="customer.reward[0] == 'true'" type="checkbox" :id="'reward30-'+customer._id" checked disabled style="cursor:default">
@@ -163,27 +169,22 @@
         </div>
     </div>
     <% include ./includes/firebase-client %>
-    <script src="/javascripts/browserify.client.js"></script>
-    <script src="/javascripts/admin.min.js"></script>
-    <script>
-        var vue = new Vue({
-            el: '#vue',
-            data: {
-                customerList:[]
-            },
-            methods: {
-                removeCustomer: (_id) => {
-                    removeCustomer(_id);
+        <script src="/javascripts/browserify.client.js"></script>
+        <script src="/javascripts/admin.min.js"></script>
+        <script>
+            var vue = new Vue({
+                el: '#vue',
+                data: {
+                    customerList: []
                 },
-                updateCustomer: (_id) => {
-                    updateCustomer(_id);
-                },
-                saveUpdateCustomer: (_id) => {
-                    saveUpdateCustomer(_id);
+                methods: {
+                    removeCustomer: _id => removeCustomer(_id),
+                    updateCustomer: _id => updateCustomer(_id),
+                    saveUpdateCustomer: _id => saveUpdateCustomer(_id),
+                    showRollHistory: customer => showRollHistory(customer)
                 }
-            }
-        });
-    </script>
+            });
+        </script>
 </body>
 
 </html>

@@ -24,7 +24,7 @@ router.get('/admin', function (req, res, next) {
             var customers = [];
             result.docs.forEach(customer => customers.push({ _id: customer.id, ...customer.data() }));
             res.render('admin', {
-                title: 'TuyetNgoc - Admin',
+                title: 'TuyetNgoc',
                 customerList: customers
             });
         })
@@ -90,7 +90,8 @@ router.post('/admin/newUser', function (req, res, next) {
             release_card_day: req.body.release_card_day,
             expire_card_day: req.body.expire_card_day,
             card_quantity: parseInt(req.body.card_quantity),
-            reward: req.body['reward[]']
+            reward: req.body['reward[]'],
+            reward_history: req.body['reward_history[]']
         })
         .then(r => res.end(r.id))
         .catch(err => console.log(err));
@@ -107,12 +108,14 @@ router.post('/admin/removeUser', function (req, res, next) {
 
 router.post('/admin/updateUser', function (req, res, next) {
     var newData = {
-        expire_card_day: req.body.expire_card_day,
+        //expire_card_day: req.body.expire_card_day,
         roll: parseInt(req.body.roll),
-        release_card_day: req.body.release_card_day,
+        //release_card_day: req.body.release_card_day,
         playtime: parseInt(req.body.playtime),
         reward: req.body['reward[]'],
-        card_quantity: parseInt(req.body.card_quantity)
+        card_quantity: parseInt(req.body.card_quantity),
+        password: req.body.password,
+        reward_history: req.body['reward_history[]']
     };
 
     firebase.firestore()

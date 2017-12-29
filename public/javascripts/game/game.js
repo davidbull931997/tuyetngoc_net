@@ -59,53 +59,66 @@ playGame.prototype = {
     // function to spin the wheel
     spin() {
         // can we spin the wheel?
-        firebase.firestore()
-            .collection('customers')
-            .doc(vue.user._id)
-            .get()
-            .then(r => {
-                if (r.data().roll > 0) {
-                    if (canSpin) {
-                        // resetting text field
-                        prizeText.text = "";
-                        // the wheel will spin round from 2 to 4 times. This is just coreography
-                        var rounds = game.rnd.between(4, 8);
-                        // then will rotate by a random number from 0 to 360 degrees. This is the actual spin
-                        var degrees = game.rnd.between(0, 360);
-                        // before the wheel ends spinning, we already know the prize according to "degrees" rotation and the number of slices
-                        prize = slices - 1 - Math.floor(degrees / (360 / slices));
+        if (canSpin) {
+            // now the wheel cannot spin because it's already spinning
+            canSpin = false;
+            if (vue.user.roll > 0)
+                firebase.firestore()
+                    .collection('customers')
+                    .doc(vue.user._id)
+                    .get()
+                    .then(r => {
+                        if (r.data().roll > 0) {
+                            // resetting text field
+                            prizeText.text = "";
+                            // the wheel will spin round from 2 to 4 times. This is just coreography
+                            var rounds = game.rnd.between(4, 8);
+                            // then will rotate by a random number from 0 to 360 degrees. This is the actual spin
+                            var degrees = game.rnd.between(0, 360);
+                            // before the wheel ends spinning, we already know the prize according to "degrees" rotation and the number of slices
+                            prize = slices - 1 - Math.floor(degrees / (360 / slices));
 
-                        if (prize == 2 || prize == 6) {
-                            if (Math.floor((Math.random() * 10) + 1) > 4) {
-                                degrees = game.rnd.between(0, 360);
-                                prize = slices - 1 - Math.floor(degrees / (360 / slices));
+                            if (prize == 2 || prize == 6) {
+                                if (Math.floor((Math.random() * 10) + 1) > 4) {
+                                    degrees = game.rnd.between(0, 360);
+                                    prize = slices - 1 - Math.floor(degrees / (360 / slices));
+                                }
                             }
-                        }
 
-                        // now the wheel cannot spin because it's already spinning
-                        canSpin = false;
-                        // animation tweeen for the spin: duration 3s, will rotate by (360 * rounds + degrees) degrees
-                        // the quadratic easing will simulate friction
-                        var spinTween = game.add.tween(wheel).to({
-                            angle: 360 * rounds + degrees
-                        }, 3000, Phaser.Easing.Quadratic.Out, true);
-                        // once the tween is completed, call winPrize function
-                        spinTween.onComplete.add(this.winPrize, this);
-                        spinTween.onComplete.addOnce(() => {
-                            firebase.firestore()
-                                .collection('customers')
-                                .doc(vue.user._id)
-                                .update({
-                                    roll: parseInt(vue.user.roll) - 1
-                                })
-                                .then(() => vue.user.roll--)
-                                .catch(err => console.log(err));
-                        });
-                    }
-                }
-                else swal('Lỗi', 'Bạn hết lượt quay!', 'warning');
-            })
-            .catch(err => console.log(err));
+
+                            // animation tweeen for the spin: duration 3s, will rotate by (360 * rounds + degrees) degrees
+                            // the quadratic easing will simulate friction
+                            var spinTween = game.add.tween(wheel).to({
+                                angle: 360 * rounds + degrees
+                            }, 3000, Phaser.Easing.Quadratic.Out, true);
+                            // once the tween is completed, call winPrize function
+                            spinTween.onComplete.add(this.winPrize, this);
+                            spinTween.onComplete.addOnce(() => {
+                                vue.user.roll = parseInt(r.data().roll) - 1;
+                                firebase.firestore()
+                                    .collection('customers')
+                                    .doc(vue.user._id)
+                                    .get()
+                                    .then(r => {
+                                        firebase.firestore()
+                                            .collection('customers')
+                                            .doc(vue.user._id)
+                                            .update({
+                                                roll: parseInt(r.data().roll) - 1,
+                                                reward_history: r.data().reward_history.concat({
+                                                    datetime: Date.now(),
+                                                    reward: slicePrizes[prize]
+                                                })
+                                            })
+                                            .catch(err => console.log(err));
+                                    });
+                            });
+                        }
+                        else swal('Lỗi', 'Bạn hết lượt quay!', 'warning');
+                    })
+                    .catch(err => console.log(err));
+            else swal('Lỗi', 'Bạn hết lượt quay!', 'warning');
+        }
     },
     // function to assign the prize
     winPrize() {

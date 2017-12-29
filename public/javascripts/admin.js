@@ -15,7 +15,8 @@ observer.observe(document.querySelector('div#manage-page'), { attributes: true }
 if ($(window).width() < 992) {
     $('div.loader-parent').css('display', 'none');
 }
-
+var notificationSound = new Audio('../resources/notification_sound.mp3');
+var notificationTimer;
 $(() => {
     if ($(window).width() < 992) {
         swal({
@@ -42,6 +43,13 @@ $(() => {
         $('p.text-center.copy-right').append(date.getFullYear());
     }
 });
+
+$(window).focus(function () {
+    if (document.title.indexOf("🔔") > -1) {
+        document.title = document.title.slice(0, document.title.indexOf("🔔"));
+    }
+});
+
 
 $(window).resize(() => {
 });
@@ -272,7 +280,8 @@ function removeCustomer(_id) {
 function updateCustomer(_id) {
     var exist = false;
     for (i = 1; i <= $('tbody#vue > tr').length; i++) {
-        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(7) > a:first-child').css('display') == 'inline-block') {
+        if ($('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(8) > input').attr('disabled') != undefined &&
+            $('tbody#vue > tr:nth-child(' + i + ') > td:nth-child(9) > a:first-child').css('display') == 'inline-block') {
             exist = true;
             break;
         }
@@ -296,9 +305,9 @@ function updateCustomer(_id) {
         $('tr#' + _id + ' > td:nth-child(2)').append('<input type="number" step="1" value=' + value.point + ' min="1" style="width:' + oldWidth.point + '">');
         $('tr#' + _id + ' > td:nth-child(5)').append('<input type="number" step="1" value=' + value.card_quantity + ' min="1" style="width:' + oldWidth.card_quantity + '">');
         $('tr#' + _id + ' > td:nth-child(6)').append('<input type="number" step="1" value=' + value.roll + ' min="1" style="width:' + oldWidth.roll + '">');
-        $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', '').removeAttr('disabled');
-        $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'none');
-        $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'inline-block');
+        $('tr#' + _id + ' > td:nth-child(8) > input').css('cursor', '').removeAttr('disabled');
+        $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(2)').css('display', 'none');
+        $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(1)').css('display', 'inline-block');
         resizeFixedTableHead();
     }
 }
@@ -307,7 +316,7 @@ function saveUpdateCustomer(_id) {
     for (i = 0; i < vue.$data.customerList.length; i++) {
         var tempReward = [];
         if (_id == vue.$data.customerList[i]._id) {
-            $('#' + _id + ' > td:nth-child(7) > input').each((index, element) => {
+            $('#' + _id + ' > td:nth-child(8) > input').each((index, element) => {
                 if (vue.$data.customerList[i].reward[index] == $(element).is(':checked').toString())
                     tempReward[index] = true;
                 else
@@ -325,9 +334,9 @@ function saveUpdateCustomer(_id) {
                 $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
                 $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
                 $('tr#' + _id + ' > td:nth-child(6) > p').css('display', 'block');
-                $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'none');
-                $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'inline-block');
-                $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', 'default').attr('disabled', true);
+                $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(1)').css('display', 'none');
+                $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(2)').css('display', 'inline-block');
+                $('tr#' + _id + ' > td:nth-child(8) > input').css('cursor', 'default').attr('disabled', true);
                 resizeFixedTableHead();
                 break;
             }
@@ -336,7 +345,7 @@ function saveUpdateCustomer(_id) {
                 vue.$data.customerList[i].playtime = $('tr#' + _id + ' > td:nth-child(2) > input').val();
                 vue.$data.customerList[i].card_quantity = $('tr#' + _id + ' > td:nth-child(5) > input').val();
                 vue.$data.customerList[i].roll = $('tr#' + _id + ' > td:nth-child(6) > input').val();
-                $('#' + _id + ' > td:nth-child(7) > input').each((index, element) => {
+                $('#' + _id + ' > td:nth-child(8) > input').each((index, element) => {
                     vue.$data.customerList[i].reward[index] = $(element).is(':checked').toString();
                 });
                 swal({ padding: 30 });
@@ -351,9 +360,9 @@ function saveUpdateCustomer(_id) {
                     $('tr#' + _id + ' > td:nth-child(2) > p').css('display', 'block');
                     $('tr#' + _id + ' > td:nth-child(5) > p').css('display', 'block');
                     $('tr#' + _id + ' > td:nth-child(6) > p').css('display', 'block');
-                    $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(1)').css('display', 'none');
-                    $('tr#' + _id + ' > td:nth-child(8) > a:nth-child(2)').css('display', 'inline-block');
-                    $('tr#' + _id + ' > td:nth-child(7) > input').css('cursor', 'default').attr('disabled', true);
+                    $('tr#' + _id + ' > td:nth-child(8) > input').css('cursor', 'default').attr('disabled', true);
+                    $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(1)').css('display', 'none');
+                    $('tr#' + _id + ' > td:nth-child(9) > a:nth-child(2)').css('display', 'inline-block');
                     vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
                     resizeFixedTableHead();
                 });
@@ -361,6 +370,43 @@ function saveUpdateCustomer(_id) {
             }
         }
     }
+}
+
+function showRollHistory(customer) {
+    var rewardListRender = '';
+    customer.reward_history.forEach(item => {
+        rewardListRender += `<tr>` +
+            `<td>${new Date(item.datetime).getHours() > 9 ? new Date(item.datetime).getHours() : `0` + new Date(item.datetime).getHours()}:` +
+            `${new Date(item.datetime).getMinutes() > 9 ? new Date(item.datetime).getMinutes() : `0` + new Date(item.datetime).getMinutes()} - ` +
+            `${new Date(item.datetime).toLocaleDateString("vi-VN")}</td>
+            <td>${item.reward}</td>
+        </tr>`;
+    });
+    vex.dialog.open({
+        overlayClosesOnClick: false,
+        appendLocation: '#manage-page',
+        message: 'Lịch sử quay :',
+        input: `
+            <div style="${customer.reward_history.length ? `height:${screen.height / 3}px; overflow-y:scroll;` : null}">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Thời gian</th>
+                            <th>Phần thưởng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rewardListRender}                                
+                    </tbody>
+                </table>
+            </div>`,
+        buttons: [
+            $.extend({}, vex.dialog.buttons.CANCEL, { text: 'Đóng' })
+        ],
+        callback: function (data) {
+            //console.log(data);
+        }
+    });
 }
 
 function checkInput(submit_parameter) {
@@ -386,6 +432,9 @@ function checkInput(submit_parameter) {
                     if (result.status) {
                         vue.$data.customerList = cl;
                         vue.$data.customerList.sort((a, b) => b["playtime"] - a["playtime"]);
+                        for (let i = 0; i < vue.customerList.length; i++) {
+                            vue.customerList[i].reward_history.sort((a,b)=>b.datetime - a.datetime);
+                        }
                         $('div#manage-page').css('visibility', 'hidden').fadeIn(400, () => {
                             $('input#username').val('');
                             $('input#password').val('');
@@ -397,23 +446,30 @@ function checkInput(submit_parameter) {
                                     .collection('customers')
                                     .onSnapshot(ss => {
                                         ss.docChanges.forEach(dc => {
-                                            // console.log(dc);
-                                            // console.log(dc.doc.data());
                                             if (dc.type == 'modified')
                                                 for (let i = 0; i < vue.customerList.length; i++) {
                                                     if (vue.customerList[i]._id == dc.doc.id) {
-                                                        vue.customerList[i].roll = parseInt(dc.doc.data().roll);
-                                                        break;
+                                                        if (vue.customerList[i].roll != parseInt(dc.doc.data().roll) && vue.customerList[i].reward_history.length != dc.doc.data().reward_history.length) {
+                                                            vue.customerList[i].roll = parseInt(dc.doc.data().roll);
+                                                            vue.customerList[i].reward_history = dc.doc.data().reward_history;
+                                                            toastr.info(
+                                                                `Tài khoản ${vue.customerList[i].username}</br>` +
+                                                                `quay trúng ${dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].reward}</br>` +
+                                                                `${new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getHours() > 9 ? new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getHours() : '0' + new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getHours()}:` +
+                                                                `${new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getMinutes() > 9 ? new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getMinutes() : '0' + new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).getMinutes()} - ` +
+                                                                `${new Date(dc.doc.data().reward_history[dc.doc.data().reward_history.length - 1].datetime).toLocaleDateString("vi-VN")}`,
+                                                                'Quay số:', { timeOut: 1000 * 60 }
+                                                            );
+                                                            notificationSound.play();
+                                                            document.hasFocus() == false ? document.title = document.title + " 🔔" : null;
+                                                            break;
+                                                        }
                                                     }
                                                 }
-                                            // vue.customerList.forEach(customer => {
-                                            //     if (customer._id == dc.doc.id) {
-
-                                            //     }
-                                            // });
                                         });
                                     }, err => console.log(err));
                                 $('div#manage-page').css('visibility', '');
+
                                 // send asynchronous POST request to keep herokuapp running
                                 wakeHerokuAppTimer = setInterval(() => {
                                     $.post('/admin/wakeHerokuApp');
@@ -452,7 +508,7 @@ function checkInput(submit_parameter) {
 
 function resizeFixedTableHead() {
     $('#fixed-thead > tr:nth-child(1) > th').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(1) > th').width());
-    for (i = 0; i < 8; i++) {
+    for (i = 1; i <= $('#fixed-thead > tr:nth-child(2) > th').length; i++) {
         $('#fixed-thead > tr:nth-child(2) > th:nth-child(' + i + ')').width($('#manage-page > div > div > table > thead:nth-child(2) > tr:nth-child(2) > th:nth-child(' + i + ')').width());
     }
 }
